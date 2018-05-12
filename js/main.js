@@ -142,6 +142,8 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurants-list__card__img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.srcset = DBHelper.imageSrcSetForRestaurant(restaurant);
+  image.sizes = imageSizesForRestaurant();
   li.append(image);
 
   const name = document.createElement('h1');
@@ -180,4 +182,11 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+}
+
+/**
+ * Returns restaurant image sizes.
+ */
+function imageSizesForRestaurant() {
+  return `(min-width: 0) 250px`;
 }
