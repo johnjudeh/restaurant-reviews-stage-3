@@ -112,17 +112,13 @@ nav {
   text-transform: uppercase;
 }
 
-/* TODO: clean this up when you are working on restaurant.html */
-
 .breadcrumb {
 	width: 100%;
 	padding: 18px 10px;
 	list-style: none;
 	background-color: #caced1;
-	/* font-size: 17px; */
 	margin: 0 auto;
 	text-align: center;
-  /* width: calc(50% - 80px); */
 }
 
 /* Display list items side by side */
@@ -243,36 +239,6 @@ nav {
 
 /* ====================== Restaurant Details ====================== */
 
-/* TODO: delete me if not needed */
-
-/* .inside header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-.inside #map-container {
-  background: blue none repeat scroll 0 0;
-  height: 87%;
-  position: fixed;
-  right: 0;
-  top: 80px;
-  width: 50%;
-}
-
-.inside #map {
-  background-color: #ccc;
-  height: 100%;
-  width: 100%;
-}
-
-.inside #footer {
-  bottom: 0;
-  position: absolute;
-  width: 50%;
-} */
-
 .restaurant,
 .reviews-container {
 	width: 100%;
@@ -329,7 +295,8 @@ nav {
 	text-align: right;
 }
 
-/* Restaurant Details -- Reviews */
+
+/* ============== Restaurant Details -- Reviews ============== */
 
 .reviews-container {
 	padding: 20px 35px 20px;
