@@ -188,5 +188,8 @@ addMarkersToMap = (restaurants = self.restaurants) => {
  * Returns restaurant image sizes.
  */
 function imageSizesForRestaurant() {
-  return `(min-width: 0) 250px`;
+  return (
+    `(max-width: 419px) calc(100% - 70px),
+    (min-width: 420px) 250px`
+  );
 }

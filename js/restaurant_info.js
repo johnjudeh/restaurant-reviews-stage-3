@@ -178,5 +178,8 @@ getParameterByName = (name, url) => {
  * Returns restaurant image sizes.
  */
 function imageSizesForRestaurant() {
-  return `(min-width: 0px) 560px`;
+  return (
+    `(max-width: 807px) calc(100% - 70px),
+    (min-width: 808px) 740px`
+  );
 }

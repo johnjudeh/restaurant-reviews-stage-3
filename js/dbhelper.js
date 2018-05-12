@@ -158,10 +158,10 @@ class DBHelper {
    */
   static imageSrcSetForRestaurant(restaurant) {
     return (
-      `/img/${restaurant.photographs.small} 250w,
-      /img/${restaurant.photographs.smallMedium} 500w,
-      /img/${restaurant.photographs.medium} 560w,
-      /img/${restaurant.photographs.large} 1120w`
+      `/img/${restaurant.photographs.small} 330w,
+      /img/${restaurant.photographs.smallMedium} 660w,
+      /img/${restaurant.photographs.medium} 740w,
+      /img/${restaurant.photographs.large} 1480w`
     );
   }
 
