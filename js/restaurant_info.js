@@ -56,7 +56,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -77,13 +76,16 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
+    row.className = 'hours-table__row';
 
     const day = document.createElement('td');
     day.innerHTML = key;
+    day.className = 'hours-table__row__data';
     row.appendChild(day);
 
     const time = document.createElement('td');
     time.innerHTML = operatingHours[key];
+    time.className = 'hours-table__row__data';
     row.appendChild(time);
 
     hours.appendChild(row);
@@ -97,6 +99,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
+  title.className = 'reviews-title';
   container.appendChild(title);
 
   if (!reviews) {
@@ -106,6 +109,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
+  ul.className = 'reviews-list';
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -118,19 +122,24 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('p');
+  li.className = 'reviews-list__review';
   name.innerHTML = review.name;
+  name.className = 'reviews-list__review__name';
   li.appendChild(name);
 
   const date = document.createElement('p');
   date.innerHTML = review.date;
+  date.className = 'reviews-list__review__date';
   li.appendChild(date);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
+  rating.className = 'reviews-list__review__rating';
   li.appendChild(rating);
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
+  comments.className = 'reviews-list__review__comment';
   li.appendChild(comments);
 
   return li;
@@ -143,6 +152,7 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
+  li.className = 'breadcrumb__item';
   breadcrumb.appendChild(li);
 }
 

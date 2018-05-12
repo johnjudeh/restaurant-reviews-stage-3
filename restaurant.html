@@ -8,33 +8,35 @@
   <!-- Main CSS file -->
   <link rel="stylesheet" href="css/styles.css" type="text/css">
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body class="inside">
+<!-- <body class="inside"> -->
+<body>
   <header>
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1 class="logo-text"><a class="logo-link" href="/">Restaurant Reviews</a></h1>
     </nav>
 
-    <ul id="breadcrumb" >
-      <li><a href="/">Home</a></li>
+    <ul class="breadcrumb" id="breadcrumb">
+      <li class="breadcrumb__item"><a class="breadcrumb__item__link" href="/">Home</a></li>
     </ul>
   </header>
 
   <main id="maincontent">
     <section id="map-container">
-      <div id="map"></div>
+      <div class="map-div" id="map"></div>
     </section>
 
-    <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
-      <img id="restaurant-img">
-      <p id="restaurant-cuisine"></p>
-      <p id="restaurant-address"></p>
-      <table id="restaurant-hours"></table>
+    <section class="restaurant" id="restaurant-container">
+      <h1 class="restaurant__name" id="restaurant-name"></h1>
+      <img class="restaurant__image" id="restaurant-img">
+      <p class="restaurant__cuisine" id="restaurant-cuisine"></p>
+      <p class="restaurant__address" id="restaurant-address"></p>
+      <table class="restaurant__hours-table" id="restaurant-hours"></table>
     </section>
 
-    <section id="reviews-container">
+    <section class="reviews-container" id="reviews-container">
       <ul id="reviews-list"></ul>
     </section>
   </main>
