@@ -81,7 +81,6 @@ main {
 footer {
   background-color: #444;
   color: #aaa;
-  font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
   text-align: center;
@@ -155,6 +154,10 @@ nav {
   background-color: #ccc;
 }
 
+.map-reviews {
+	border-bottom: 25px solid #3397db;
+}
+
 
 /* ====================== Restaurant Filtering ====================== */
 
@@ -168,17 +171,18 @@ nav {
 
 .filter-options__header {
   color: white;
-	width: 100px;
-  font-size: 1rem;
+	width: 100%;
+	text-align: center;
+  font-size: 1.1rem;
   font-weight: normal;
-  margin: 2px auto;
+  margin: 2px 0;
 }
 
 .filter-options__dropdown {
   background-color: white;
   border: 1px solid #fff;
   font-family: Arial, sans-serif;
-  font-size: 11pt;
+  font-size: 1rem;
   height: 48px;
 	width: 85%;
   margin: 8px 7.5%;
@@ -191,18 +195,17 @@ nav {
 .restaurants-list {
   list-style: none;
   margin: 0;
-  padding: 25px 15px;
+  padding: 20px 35px 20px;
   text-align: center;
 }
 
 .restaurants-list__card {
+	width: 100%;
+	min-height: 380px;
   background-color: #fff;
   font-family: Arial, sans-serif;
-  margin: 20px auto;
-  min-height: 380px;
+  margin: 20px 0;
   padding: 0;
-  width: 270px;
-	max-width: 90%;
 	border-radius: 1.5em 0;
 }
 
@@ -222,7 +225,7 @@ nav {
 
 .restaurants-list__card__address {
   margin: 0 8px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .restaurants-list__card__link {
@@ -232,7 +235,7 @@ nav {
   display: inline-block;
   font-size: 14px;
   margin: 15px 0 15px;
-  padding: 8px 30px 10px;
+  padding: 10px 30px 10px;
   text-transform: uppercase;
 }
 
@@ -247,7 +250,6 @@ nav {
 
 .restaurant {
 	padding: 25px 35px 20px;
-	border-top: 25px solid #3397db;
 	border-bottom: 2px solid #caced1;
 }
 
@@ -278,8 +280,14 @@ nav {
 
 .restaurant__address {
   font-size: 1.2em;
-  margin: 10px 0px;
+  margin: 10px 0px 20px;
 	text-align: center;
+}
+
+.restaurant__hours-table {
+	width: 100%;
+	max-width: 420px;
+	margin: 0 auto;
 }
 
 .hours-table__row {
@@ -324,4 +332,117 @@ nav {
 .reviews-list__review__date,
 .reviews-list__review__rating {
 	color: #a04600;
+}
+
+
+/* ====================== Breakpoints ====================== */
+
+
+@media screen and (min-width: 380px) {
+
+	/* ====================== Restaurant Filtering ====================== */
+
+	.filter-options__dropdown {
+		width: 298px;
+    margin: 8px calc((100% - 298px)/2);
+	}
+
+}
+
+@media screen and (min-width: 420px) {
+
+	/* ====================== Navigation ====================== */
+
+	.logo-link {
+		font-size: 1rem;
+	}
+
+	.breadcrumb__item {
+		font-size: 1rem;
+	}
+
+	/* ====================== Restaurant Listing ====================== */
+
+	.restaurants-list {
+		display: flex;
+		flex-wrap: wrap;
+		width: 420px;
+		margin: 0 auto;
+	}
+
+	.restaurants-list__card {
+		width: 349px;
+		margin: 20px 10px;
+	}
+
+}
+
+@media screen and (min-width: 460px) {
+
+	/* ====================== Restaurant Details ====================== */
+
+	.hours-table__row__data {
+		font-size: 1rem;
+	}
+
+	/* ============== Restaurant Details -- Reviews ============== */
+
+	.reviews-list__review__name,
+	.reviews-list__review__date,
+	.reviews-list__review__rating,
+	.reviews-list__review__comment {
+		font-size: 1rem;
+		margin-bottom: 5px;
+	}
+
+}
+
+@media screen and (min-width: 808px) {
+
+	/* ====================== Navigation ====================== */
+
+	.logo-link {
+		font-size: 1.2rem;
+	}
+
+	/* ====================== Restaurant Filtering ====================== */
+
+	.filter-options {
+		display: flex;
+		flex-wrap: wrap;
+		height: 130px;
+	}
+
+	.filter-options__dropdown {
+		margin: 8px 10px;
+	}
+
+	.filter-options__dropdown:nth-of-type(2n-1) {
+		margin-left: calc((100% - 616px)/2);
+	}
+
+	/* ====================== Restaurant Listing ====================== */
+
+	.restaurants-list {
+		width: 808px;
+	}
+
+	/* ====================== Restaurant Details ====================== */
+
+	.restaurant,
+	.reviews-list {
+		width: 808px;
+		margin: 0 auto;
+	}
+
+}
+
+@media screen and (min-width: 1177px) {
+
+	/* ====================== Restaurant Listing ====================== */
+
+	.restaurants-list {
+		width: 1177px;
+	}
+
 }
