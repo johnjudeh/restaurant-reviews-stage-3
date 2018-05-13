@@ -80,31 +80,23 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
-  google.maps.event.addListener(self.map, "tilesloaded", removeIframeFocusability);
+  google.maps.event.addListener(self.map, "tilesloaded", mapAssistiveStrategy);
   updateRestaurants();
 }
 
 /**
  * Ensures that only elements that should be focussable are
  */
-removeIframeFocusability = () => {
-  // Ensures that iframe is not focussable outside of javascript
+mapAssistiveStrategy = () => {
   const iframe = document.querySelector('iframe');
+  const mapDiv = document.querySelector('div[tabindex="0"]');
+
+  // Ensures that iframe is not focussable outside of javascript and has a title
+  iframe.title = 'Restaurants map';
   iframe.setAttribute('tabindex', '-1');
 
-  // TODO: delete me once you realise that I am not needed
-
-  // const divs = slice(document.querySelectorAll("#map div"));
-  // divs.forEach((div) => {
-  //   if (div.hasAttribute("tabindex")) {
-  //     console.log(div.getAttribute("tabindex"));
-  //     setTimeout(() => {
-  //       div.removeAttribute("tabindex");
-  //       console.log(div.getAttribute("tabindex"));
-  //       console.log(div);
-  //     }, 8000)
-  //   }
-  // })
+  // Adds aria-label to mapDiv
+  mapDiv.setAttribute('aria-label', 'Restaurants map');
 };
 
 // TODO: delete if not useful

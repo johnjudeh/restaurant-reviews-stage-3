@@ -50,9 +50,11 @@ fetchRestaurantFromURL = (callback) => {
  * Ensures that only elements that should be focussable are
  */
 removeIframeFocusability = () => {
-  // Ensures that iframe is not focussable outside of javascript
+  // Ensures that iframe is not focussable outside of javascript and has a title
   const iframe = document.querySelector('iframe');
+  iframe.title = 'Restaurants map';
   iframe.setAttribute('tabindex', '-1');
+
 }
 
 /**
