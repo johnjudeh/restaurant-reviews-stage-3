@@ -192,10 +192,19 @@ nav {
 
 /* ====================== Restaurant Listing ====================== */
 
+.restaurants-list-title {
+	text-align: center;
+	margin: 40px 0 15px;
+	color: #f18200;
+	font-size: 1.8em;
+	font-weight: 300;
+	text-transform: uppercase;
+}
+
 .restaurants-list {
   list-style: none;
   margin: 0;
-  padding: 20px 35px 20px;
+  padding: 0 35px 20px;
   text-align: center;
 }
 
@@ -256,10 +265,17 @@ nav {
 .restaurant__name,
 .reviews-title {
   color: #f18200;
-	font: 200 1.5em/1.1em Arial, sans-serif;
   margin: 5px 0 30px;
   text-transform: uppercase;
 	text-align: center;
+}
+
+.restaurant__name {
+	font: 300 1.8em/1.1em Arial, sans-serif;
+}
+
+.reviews-title {
+	font: 200 1.5em/1.1em Arial, sans-serif;
 }
 
 .restaurant__image {
