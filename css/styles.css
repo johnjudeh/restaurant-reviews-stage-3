@@ -42,7 +42,7 @@ a {
 a:hover,
 a:focus {
 	color: #0074c2;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 a img {
