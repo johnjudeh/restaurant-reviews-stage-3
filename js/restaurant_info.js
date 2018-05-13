@@ -14,6 +14,7 @@ window.initMap = () => {
         center: restaurant.latlng,
         scrollwheel: false
       });
+      google.maps.event.addListener(self.map, "tilesloaded", removeIframeFocusability);
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
@@ -43,6 +44,15 @@ fetchRestaurantFromURL = (callback) => {
       callback(null, restaurant)
     });
   }
+}
+
+/**
+ * Ensures that only elements that should be focussable are
+ */
+removeIframeFocusability = () => {
+  // Ensures that iframe is not focussable outside of javascript
+  const iframe = document.querySelector('iframe');
+  iframe.setAttribute('tabindex', '-1');
 }
 
 /**

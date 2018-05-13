@@ -80,8 +80,42 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+  google.maps.event.addListener(self.map, "tilesloaded", removeIframeFocusability);
   updateRestaurants();
 }
+
+/**
+ * Ensures that only elements that should be focussable are
+ */
+removeIframeFocusability = () => {
+  // Ensures that iframe is not focussable outside of javascript
+  const iframe = document.querySelector('iframe');
+  iframe.setAttribute('tabindex', '-1');
+
+  // TODO: delete me once you realise that I am not needed
+
+  // const divs = slice(document.querySelectorAll("#map div"));
+  // divs.forEach((div) => {
+  //   if (div.hasAttribute("tabindex")) {
+  //     console.log(div.getAttribute("tabindex"));
+  //     setTimeout(() => {
+  //       div.removeAttribute("tabindex");
+  //       console.log(div.getAttribute("tabindex"));
+  //       console.log(div);
+  //     }, 8000)
+  //   }
+  // })
+};
+
+// TODO: delete if not useful
+
+/**
+ * @returns an array from a nodeList
+ */
+slice = (nodeList) => {
+  return Array.prototype.slice.call(nodeList);
+}
+
 
 /**
  * Update page and map for current restaurants.
