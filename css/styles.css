@@ -189,6 +189,13 @@ nav {
   padding: 0 10px;
 }
 
+.filter-options__dropdown:focus,
+.filter-options__dropdown:hover {
+	background: #e91e63;
+	color: #fff;
+	text-decoration: underline;
+}
+
 
 /* ====================== Restaurant Listing ====================== */
 
@@ -246,6 +253,13 @@ nav {
   margin: 15px 0 15px;
   padding: 10px 30px 10px;
   text-transform: uppercase;
+}
+
+.restaurants-list__card__link:focus,
+.restaurants-list__card__link:hover {
+	background: #e91e63;
+	color: #fff;
+	text-decoration: underline;
 }
 
 
