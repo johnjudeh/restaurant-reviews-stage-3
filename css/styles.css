@@ -40,9 +40,15 @@ a {
 }
 
 a:hover,
+a:focus,
+button:hover,
+button:focus {
+	text-decoration: underline;
+}
+
+a:hover,
 a:focus {
 	color: #0074c2;
-	text-decoration: underline;
 }
 
 a img {
@@ -362,6 +368,47 @@ nav {
 .reviews-list__review__date,
 .reviews-list__review__rating {
 	color: #975938;
+}
+
+/* ====================== Service Worker Toast ====================== */
+
+.sw-toast {
+	position: sticky;
+	width: 400px;
+	max-width: 80%;
+	min-height: 40px;
+	bottom: 50px;
+  z-index: 1;
+  margin: 0 auto;
+	padding: 10px;
+  display: flex;
+  display: -webkit-flex;
+  background-color: #323232;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2),
+							0 -1px 0px rgba(0,0,0,0.02);
+}
+
+.sw-toast[hidden] {
+	display: none;
+}
+
+.toastMessage {
+  margin: auto;
+  margin-left: 5px;
+	color: #fff;
+	font-size: 1.2em;
+}
+
+.toastButton {
+  background: none;
+  border: none;
+  color: #FF5252;
+  text-transform: uppercase;
+  float: right;
+  cursor: pointer;
+  margin: auto 1px;
+	font-size: 1.1em;
 }
 
 

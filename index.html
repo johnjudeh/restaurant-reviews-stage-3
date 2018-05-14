@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang='en-GB'>
+<html lang="en-GB">
 
 <head>
   <title>Restaurant Reviews</title>
@@ -40,12 +40,21 @@
       <ul class="restaurants-list" id="restaurants-list" aria-live="polite"
         aria-relevant="additions"></ul>
     </section>
+
+    <div class="sw-toast" id="toastDiv" hidden role="dialog" aria-labelledby="toastMessage"
+      aria-live="polite">
+      <p class="toastMessage" id="toastMessage">New version available</p>
+      <button class="toastButton" id="swRefresh">Refresh</button>
+      <button class="toastButton" id="swDismiss">Dismiss</button>
+    </div>
+
   </main>
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
+  <script src="js/sw/index.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL-UOm3yFm_RGo7qEX2nReEpuEy99VH3U&libraries=places&callback=initMap"></script>

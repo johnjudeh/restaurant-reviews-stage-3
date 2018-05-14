@@ -38,12 +38,20 @@
     <section class="reviews-container" id="reviews-container">
       <ul id="reviews-list"></ul>
     </section>
+
+    <div class="sw-toast" id="toastDiv" hidden role="dialog" aria-labelledby="toastMessage"
+      aria-live="polite">
+      <p class="toastMessage" id="toastMessage">New version available</p>
+      <button class="toastButton" id="swRefresh">Refresh</button>
+      <button class="toastButton" id="swDismiss">Dismiss</button>
+    </div>
   </main>
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
+  <script src="js/sw/index.js"></script>
   <!-- Database helpers -->
   <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
