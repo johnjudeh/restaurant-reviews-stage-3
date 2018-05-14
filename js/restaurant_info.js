@@ -14,12 +14,12 @@ window.initMap = () => {
         center: restaurant.latlng,
         scrollwheel: false
       });
-      google.maps.event.addListener(self.map, "tilesloaded", removeIframeFocusability);
+      google.maps.event.addListener(self.map, 'tilesloaded', removeIframeFocusability);
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
-}
+};
 
 /**
  * Get current restaurant from page URL.
@@ -44,7 +44,7 @@ fetchRestaurantFromURL = (callback) => {
       callback(null, restaurant)
     });
   }
-}
+};
 
 /**
  * Ensures that only elements that should be focussable are
@@ -55,7 +55,7 @@ removeIframeFocusability = () => {
   iframe.title = 'Restaurants map';
   iframe.setAttribute('tabindex', '-1');
 
-}
+};
 
 /**
  * Create restaurant HTML and add it to the webpage
@@ -82,7 +82,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fillReviewsHTML();
-}
+};
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
@@ -105,7 +105,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 
     hours.appendChild(row);
   }
-}
+};
 
 /**
  * Create all reviews HTML and add them to the webpage.
@@ -129,7 +129,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
-}
+};
 
 /**
  * Create review HTML and add it to the webpage.
@@ -158,7 +158,7 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
-}
+};
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
@@ -169,7 +169,7 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   li.innerHTML = restaurant.name;
   li.className = 'breadcrumb__item';
   breadcrumb.appendChild(li);
-}
+};
 
 /**
  * Get a parameter by name from page URL.
@@ -185,14 +185,14 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+};
 
 /**
- * Returns restaurant image sizes.
+ * Returns restaurant image sizes attribute content.
  */
 imageSizesForRestaurant = () => {
   return (
     `(max-width: 807px) calc(100% - 70px),
     (min-width: 808px) 740px`
   );
-}
+};

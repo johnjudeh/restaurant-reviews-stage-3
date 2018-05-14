@@ -1,29 +1,39 @@
+/**
+ * Handles service worker registration, installing, waiting and updating
+ */
 class ServiceWorker {
   constructor() {
     this.registerServiceWorker();
   }
 
+  // Registers service worker and checks to see if any new
+  // service workers are waiting
   registerServiceWorker() {
+    // Exits if browser does not support service worker
     if (!navigator.serviceWorker) return;
     const serviceWorker = this;
 
+    // Registers service worker from sw.js
     navigator.serviceWorker.register('/sw.js').then(reg => {
       if (!navigator.serviceWorker.controller) {
         return;
       }
 
+      // Handles waiting service worker
       if (reg.waiting) {
         console.log('Service Worker is Waiting');
         this.updateReady(reg.waiting);
         return;
       }
 
+      // Handles installing service worker
       if (reg.installing) {
         console.log('Service Worker is Installing!');
         this.trackInstalling(reg.installing);
         return;
       }
 
+      // Listens for updates in service worker
       reg.addEventListener('updatefound', () => {
         console.log('Service Worker is Installing!');
         serviceWorker.trackInstalling(reg.installing);
@@ -68,4 +78,5 @@ class ServiceWorker {
   }
 }
 
+// Creates new ServiceWorker on page load
 const serviceWorker = new ServiceWorker();
