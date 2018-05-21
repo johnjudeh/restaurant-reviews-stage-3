@@ -1,4 +1,4 @@
-const staticCacheName = 'mws-restaurant-v4';
+const staticCacheName = 'mws-restaurant-v6';
 const cacheWhiteList = [ staticCacheName ];
 
 // Event fires when service worker is first discovered

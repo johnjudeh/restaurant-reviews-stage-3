@@ -149,6 +149,24 @@ nav {
 	text-decoration: underline;
 }
 
+.skip-link {
+	position: absolute;
+	top: -40px;
+	left: 0px;
+	font-size: 1.5em;
+	background-color: white;
+  height: 40px;
+  width: 250px;
+  border-radius: 4px;
+  text-align: center;
+  vertical-align: middle;
+	z-index: 1;
+}
+
+.skip-link:focus {
+	top: 80px;
+}
+
 
 /* ====================== Map ====================== */
 
