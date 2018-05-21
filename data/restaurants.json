@@ -7,7 +7,8 @@
       "small": "1-small.jpg",
       "smallMedium": "1-small-medium.jpg",
       "medium": "1-medium.jpg",
-      "large": "1-large.jpg"
+      "large": "1-large.jpg",
+      "alt": "A busy but ambient atmosphere in Mission Chineese Food"
     },
     "address": "171 E Broadway, New York, NY 10002",
     "latlng": {
@@ -51,7 +52,8 @@
       "small": "2-small.jpg",
       "smallMedium": "2-small-medium.jpg",
       "medium": "2-medium.jpg",
-      "large": "2-large.jpg"
+      "large": "2-large.jpg",
+      "alt": "A warm margherita pizza on a wooden surface"
     },
     "address": "919 Fulton St, Brooklyn, NY 11238",
     "latlng": {
@@ -95,7 +97,8 @@
       "small": "3-small.jpg",
       "smallMedium": "3-small-medium.jpg",
       "medium": "3-medium.jpg",
-      "large": "3-large.jpg"
+      "large": "3-large.jpg",
+      "alt": "A modern restaurant with tables with cookers in the middle"
     },
     "address": "1 E 32nd St, New York, NY 10016",
     "latlng": {
@@ -139,7 +142,8 @@
       "small": "4-small.jpg",
       "smallMedium": "4-small-medium.jpg",
       "medium": "4-medium.jpg",
-      "large": "4-large.jpg"
+      "large": "4-large.jpg",
+      "alt": "A cozy deli on the corner of a Manhattan street"
     },
     "address": "205 E Houston St, New York, NY 10002",
     "latlng": {
@@ -183,7 +187,8 @@
       "small": "5-small.jpg",
       "smallMedium": "5-small-medium.jpg",
       "medium": "5-medium.jpg",
-      "large": "5-large.jpg"
+      "large": "5-large.jpg",
+      "alt": "A cafeteria-like Italian restaurant with an open kitchen"
     },
     "address": "261 Moore St, Brooklyn, NY 11206",
     "latlng": {
@@ -227,7 +232,8 @@
       "small": "6-small.jpg",
       "smallMedium": "6-small-medium.jpg",
       "medium": "6-medium.jpg",
-      "large": "6-large.jpg"
+      "large": "6-large.jpg",
+      "alt": "A casual indoor barbeque kitchen with a large American flag hanging on the wall"
     },
     "address": "454 Van Brunt St, Brooklyn, NY 11231",
     "latlng": {
@@ -271,7 +277,8 @@
       "small": "7-small.jpg",
       "smallMedium": "7-small-medium.jpg",
       "medium": "7-medium.jpg",
-      "large": "7-large.jpg"
+      "large": "7-large.jpg",
+      "alt": "The outside of the small Superiority Burger restaurant in Manhattan"
     },
     "address": "430 E 9th St, New York, NY 10009",
     "latlng": {
@@ -315,7 +322,8 @@
       "small": "8-small.jpg",
       "smallMedium": "8-small-medium.jpg",
       "medium": "8-medium.jpg",
-      "large": "8-large.jpg"
+      "large": "8-large.jpg",
+      "alt": "A blue bold sign hangs above the Dutch restaurant"
     },
     "address": "131 Sullivan St, New York, NY 10012",
     "latlng": {
@@ -359,7 +367,8 @@
       "small": "9-small.jpg",
       "smallMedium": "9-small-medium.jpg",
       "medium": "9-medium.jpg",
-      "large": "9-large.jpg"
+      "large": "9-large.jpg",
+      "alt": "Mu Ramen's busy but cozy atmosphere with people eating with chopsticks"
     },
     "address": "1209 Jackson Ave, Queens, NY 11101",
     "latlng": {
@@ -403,7 +412,8 @@
       "small": "10-small.jpg",
       "smallMedium": "10-small-medium.jpg",
       "medium": "10-medium.jpg",
-      "large": "10-large.jpg"
+      "large": "10-large.jpg",
+      "alt": "An exquisitely designed and well lit modern kitchen in Queens"
     },
     "address": "5-48 49th Ave, Queens, NY 11101",
     "latlng": {
