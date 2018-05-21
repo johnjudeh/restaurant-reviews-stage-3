@@ -89,14 +89,16 @@ window.initMap = () => {
  */
 mapAssistiveStrategy = () => {
   const iframe = document.querySelector('iframe');
-  const mapDiv = document.querySelector('div[tabindex="0"]');
+  const mapDiv = document.querySelectorAll('div[tabindex="0"]')[1];
 
   // Ensures that iframe is not focussable outside of javascript and has a title
   iframe.title = 'Restaurants map';
   iframe.setAttribute('tabindex', '-1');
 
-  // Adds aria-label to mapDiv
-  mapDiv.setAttribute('aria-label', 'Restaurants map');
+  // Removes tabindex from mapDiv created by Google Maps
+  setTimeout(() => {
+    mapDiv.setAttribute('tabindex', '-1');
+  }, 1000);
 };
 
 /**
