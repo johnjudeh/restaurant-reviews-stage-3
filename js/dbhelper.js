@@ -1,4 +1,20 @@
 /**
+ * Alt text for each restaurant
+ */
+const RESTARAUNT_ALT_TEXT = [
+  'A busy but ambient atmosphere in Mission Chineese Food',
+  'A warm margherita pizza on a wooden surface',
+  'A modern restaurant with tables with cookers in the middle',
+  'A cozy deli on the corner of a Manhattan street',
+  'A cafeteria-like Italian restaurant with an open kitchen',
+  'A casual indoor barbeque kitchen with a large American flag hanging on the wall',
+  'The outside of the small Superiority Burger restaurant in Manhattan',
+  'A blue bold sign hangs above the Dutch restaurant',
+  'Mu Ramen\'s busy but cozy atmosphere with people eating with chopsticks',
+  'An exquisitely designed and well lit modern kitchen in Queens'
+];
+
+/**
  * Common database helper functions.
  */
 class DBHelper {
@@ -187,25 +203,28 @@ class DBHelper {
   /**
    * Restaurant image URL.
    */
-   // TODO: Come back to fix this
   static imageUrlForRestaurant(restaurant) {
-    // return (`/img/${restaurant.photographs.large}`);
-    return ('');
+    return (`/img/${restaurant.id}-large.jpg`);
   }
 
   /**
    * Restaurant image URLs for srcset.
    */
-   // TODO: Come back to fix this
   static imageSrcSetForRestaurant(restaurant) {
-    // return (
-    //   `/img/${restaurant.photographs.small} 330w,
-    //   /img/${restaurant.photographs.smallMedium} 660w,
-    //   /img/${restaurant.photographs.medium} 740w,
-    //   /img/${restaurant.photographs.large} 1480w`
-    // );
-    return ('');
+    return (
+      `/img/${restaurant.id}-small.jpg 330w,
+      /img/${restaurant.id}-small-medium.jpg 660w,
+      /img/${restaurant.id}-medium.jpg 740w,
+      /img/${restaurant.id}-large.jpg 1480w`
+    );
   }
+
+  /**
+   * Alt text for restaurant image.
+   */
+ static altTextForRestaurant(restaurant) {
+   return RESTARAUNT_ALT_TEXT[restaurant.id - 1];
+ }
 
   /**
    * Map marker for a restaurant.
