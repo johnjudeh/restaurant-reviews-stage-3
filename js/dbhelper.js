@@ -32,7 +32,7 @@ class DBHelper {
    */
    static getSpecificRestaurantUrl(id) {
      const port = 1337 // Change this to your server port
-     return `http://localhost:${port}/${id}`;
+     return `http://localhost:${port}/restaurants/${id}`;
    }
 
   /**
@@ -45,13 +45,13 @@ class DBHelper {
 
     let searchUrl;
 
-    if (id = 0) {
+    if (id === 0) {
       searchUrl = DBHelper.ALL_RESTAURANTS_URL;
     } else {
       searchUrl = DBHelper.getSpecificRestaurantUrl(id);
     }
 
-    fetch(DBHelper.ALL_RESTAURANTS_URL)
+    fetch(searchUrl)
       .then(response => {
         if (response.status === 200) { // Got a success response from the server!
           return response.json();
@@ -70,19 +70,22 @@ class DBHelper {
 
   /**
    * Fetch a restaurant by its ID.
+   * TODO: delete the commented out code if it is not needed
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
-        callback(error, null);
+        callback('Restaurant does not exist', null);
+        // callback(error, null);
       } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
+        callback(null, restaurants);
+        // const restaurant = restaurants.find(r => r.id == id);
+        // if (restaurant) { // Got the restaurant
+        //   callback(null, restaurant);
+        // } else { // Restaurant does not exist in the database
+        //   callback('Restaurant does not exist', null);
+        // }
       }
     }, id);
   }
