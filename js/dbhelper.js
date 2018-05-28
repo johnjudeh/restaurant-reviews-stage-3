@@ -187,6 +187,7 @@ class DBHelper {
   /**
    * Restaurant image URL.
    */
+   // TODO: Come back to fix this
   static imageUrlForRestaurant(restaurant) {
     // return (`/img/${restaurant.photographs.large}`);
     return ('');
@@ -195,6 +196,7 @@ class DBHelper {
   /**
    * Restaurant image URLs for srcset.
    */
+   // TODO: Come back to fix this
   static imageSrcSetForRestaurant(restaurant) {
     // return (
     //   `/img/${restaurant.photographs.small} 330w,
