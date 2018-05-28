@@ -79,4 +79,4 @@ class ServiceWorker {
 }
 
 // Creates new ServiceWorker on page load
-const serviceWorker = new ServiceWorker();
+// const serviceWorker = new ServiceWorker();
