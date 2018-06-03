@@ -1,7 +1,8 @@
 /**
  * Handles service worker registration, installing, waiting and updating
+ * Default export from module
  */
-class ServiceWorker {
+export default class ServiceWorker {
   constructor() {
     this.registerServiceWorker();
   }
@@ -77,10 +78,3 @@ class ServiceWorker {
     })
   }
 }
-
-/**
- * Exports ServiceWorker class to be used in bundle
- * TODO: Figure out the difference between this type of export
- * and the ES6 export (export class ServiceWorker{})
- */
-module.exports = ServiceWorker;

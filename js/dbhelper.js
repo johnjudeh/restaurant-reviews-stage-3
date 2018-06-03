@@ -27,8 +27,9 @@ const RESTARAUNT_ALT_TEXT = [
 
 /**
  * Common database helper functions.
+ * Default export from module.
  */
-class DBHelper {
+export default class DBHelper {
   /**
    * All Restaurants URL From Server.
    */
@@ -238,6 +239,3 @@ class DBHelper {
   }
 
 }
-
-// Exports DBHelper class
-module.exports = DBHelper;

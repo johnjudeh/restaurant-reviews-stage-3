@@ -1,6 +1,10 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Imports offline functionality
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
@@ -27,6 +31,7 @@ var RESTARAUNT_ALT_TEXT = ['A busy but ambient atmosphere in Mission Chineese Fo
 
 /**
  * Common database helper functions.
+ * Default export from module.
  */
 
 var DBHelper = function () {
@@ -301,10 +306,7 @@ var DBHelper = function () {
   return DBHelper;
 }();
 
-// Exports DBHelper class
-
-
-module.exports = DBHelper;
+exports.default = DBHelper;
 
 },{"./offlineController":3}],2:[function(require,module,exports){
 'use strict';
@@ -315,6 +317,9 @@ var _dbhelper2 = _interopRequireDefault(_dbhelper);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Define variables used by the map
+ */
 var restaurants = void 0,
     neighborhoods = void 0,
     cuisines = void 0,
@@ -322,6 +327,10 @@ var restaurants = void 0,
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
+ */
+/**
+ * Import DBHelper which contains idb and sw methods
+ * as well as all functionality for fetch data
  */
 document.addEventListener('DOMContentLoaded', function (event) {
   fetchNeighborhoods();
@@ -542,6 +551,10 @@ function imageSizesForRestaurant() {
 },{"./dbhelper":1}],3:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // Imports the IndexedDB Promised node package
 // Imports the ServiceWorker class from sw/index.js
 
@@ -615,10 +628,14 @@ var OfflineController = function () {
   return OfflineController;
 }();
 
-module.exports = OfflineController;
+exports.default = OfflineController;
 
 },{"./sw/index":4,"idb":5}],4:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -626,6 +643,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /**
  * Handles service worker registration, installing, waiting and updating
+ * Default export from module
  */
 var ServiceWorker = function () {
   function ServiceWorker() {
@@ -716,14 +734,7 @@ var ServiceWorker = function () {
   return ServiceWorker;
 }();
 
-/**
- * Exports ServiceWorker class to be used in bundle
- * TODO: Figure out the difference between this type of export
- * and the ES6 export (export class ServiceWorker{})
- */
-
-
-module.exports = ServiceWorker;
+exports.default = ServiceWorker;
 
 },{}],5:[function(require,module,exports){
 'use strict';

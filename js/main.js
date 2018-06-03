@@ -1,5 +1,12 @@
+/**
+ * Import DBHelper which contains idb and sw methods
+ * as well as all functionality for fetch data
+ */
 import DBHelper from './dbhelper';
 
+/**
+ * Define variables used by the map
+ */
 let restaurants,
     neighborhoods,
     cuisines,

@@ -4,7 +4,7 @@ import idb from 'idb';
 import ServiceWorker from './sw/index';
 
 // Manages all tasks needed for offline functionality
-class OfflineController {
+export default class OfflineController {
   constructor() {
     // Creates new ServiceWorker on instantiation
     this._serviceWorker = new ServiceWorker();
@@ -48,5 +48,3 @@ class OfflineController {
     })
   }
 }
-
-module.exports = OfflineController;
