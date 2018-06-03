@@ -78,5 +78,9 @@ class ServiceWorker {
   }
 }
 
-// Creates new ServiceWorker on page load
-// const serviceWorker = new ServiceWorker();
+/**
+ * Exports ServiceWorker class to be used in bundle
+ * TODO: Figure out the difference between this type of export
+ * and the ES6 export (export class ServiceWorker{})
+ */
+module.exports = ServiceWorker;

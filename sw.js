@@ -1,4 +1,4 @@
-const staticCacheName = 'mws-restaurant-v6';
+const staticCacheName = 'mws-restaurant-v11';
 const cacheWhiteList = [ staticCacheName ];
 
 // Event fires when service worker is first discovered
@@ -9,12 +9,9 @@ self.addEventListener('install', event => {
         '/',
         '/index.html',
         '/restaurant.html',
-        '/js/dbhelper.js',
-        '/js/main.js',
+        '/js/main-bundle.js',
         '/js/restaurant_info.js',
-        '/js/sw/index.js',
-        '/css/styles.css',
-        '/data/restaurants.json'
+        '/css/styles.css'
       ]);
     })
   );

@@ -1,4 +1,15 @@
 /**
+ * Imports offline functionality
+ */
+import OfflineController from './offlineController';
+
+/**
+ * Creates instance of OfflineController on page load
+ * This registers the service worker and opens IndexedDB db
+ */
+const offlineController = new OfflineController();
+
+/**
  * Alt text for each restaurant
  */
 const RESTARAUNT_ALT_TEXT = [
@@ -18,7 +29,6 @@ const RESTARAUNT_ALT_TEXT = [
  * Common database helper functions.
  */
 class DBHelper {
-
   /**
    * All Restaurants URL From Server.
    */
@@ -61,6 +71,7 @@ class DBHelper {
         }
       })
       .then(restaurants => {
+        offlineController.storeInDatabase(restaurants);
         callback(null, restaurants);
       })
       .catch(error => {
@@ -227,3 +238,6 @@ class DBHelper {
   }
 
 }
+
+// Exports DBHelper class
+module.exports = DBHelper;
