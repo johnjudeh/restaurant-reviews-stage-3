@@ -50,12 +50,12 @@ export default class DBHelper {
    * Fetch restaurants by id or returns all restaurants.
    * Checks idb before fetching from server.
    */
-  static fetchRestaurants(callback, id = 0) {
-
+  static fetchRestaurants(callback, getAllRestaurants = true, id = 0) {
     // Checks if result is in database before going to server
     return offlineController.pullFromDatabase(id).then(restaurant => {
-      // Checks if database returns results for id
-      if (Object.keys(restaurant).length !== 0) {
+      // Checks if the restaurants have already been fetched or not
+      if ( (getAllRestaurants && Object.keys(restaurant).length === 10) ||
+        (!getAllRestaurants && Object.keys(restaurant).length !== 0) ) {
         callback(null, restaurant);
 
       // Throws error otherwise
@@ -125,7 +125,7 @@ export default class DBHelper {
         //   callback('Restaurant does not exist', null);
         // }
       }
-    }, id);
+    }, false, id);
   }
 
   /**

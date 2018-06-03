@@ -59,13 +59,13 @@ var DBHelper = function () {
   }, {
     key: 'fetchRestaurants',
     value: function fetchRestaurants(callback) {
-      var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
+      var getAllRestaurants = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var id = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
       // Checks if result is in database before going to server
       return offlineController.pullFromDatabase(id).then(function (restaurant) {
-        // Checks if database returns results for id
-        if (Object.keys(restaurant).length !== 0) {
+        // Checks if the restaurants have already been fetched or not
+        if (getAllRestaurants && Object.keys(restaurant).length === 10 || !getAllRestaurants && Object.keys(restaurant).length !== 0) {
           callback(null, restaurant);
 
           // Throws error otherwise
@@ -139,7 +139,7 @@ var DBHelper = function () {
           //   callback('Restaurant does not exist', null);
           // }
         }
-      }, id);
+      }, false, id);
     }
 
     /**

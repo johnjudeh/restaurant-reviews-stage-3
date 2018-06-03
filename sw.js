@@ -10,7 +10,7 @@ self.addEventListener('install', event => {
         '/index.html',
         '/restaurant.html',
         '/js/main-bundle.js',
-        '/js/restaurant_info.js',
+        '/js/restaurant-bundle.js',
         '/css/styles.css'
       ]);
     })
@@ -44,7 +44,7 @@ self.addEventListener('fetch', event => {
         return cache.match(event.request).then(response => {
 
           if (!response) {
-            const networkFetch = fetch(event.request).then(networkResponse => {
+            return fetch(event.request).then(networkResponse => {
               cache.put(event.request, networkResponse.clone());
               return networkResponse;
             });
