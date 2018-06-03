@@ -5,6 +5,7 @@ import ServiceWorker from './sw/index';
 
 // Manages all tasks needed for offline functionality
 export default class OfflineController {
+
   constructor() {
     // Creates new ServiceWorker on instantiation
     this._serviceWorker = new ServiceWorker();
@@ -32,7 +33,7 @@ export default class OfflineController {
 
   // Pass restaurants to idb Store
   storeInDatabase(restaurants) {
-    this._dbPromise.then((db) => {
+    return this._dbPromise.then(db => {
       // Leaves function if there is no database
       if (!db) return;
 
@@ -45,6 +46,34 @@ export default class OfflineController {
         store.put(restaurant);
       });
 
+      // Returns promise of transaction
+      return tx.complete;
     })
   }
+
+  // Pulls restaurants from database
+  pullFromDatabase(id) {
+    return this._dbPromise.then(db => {
+      // Leaves function if there is no database
+      if (!db) return;
+
+      // Creates a new transaction
+      const tx = db.transaction('restaurants');
+      const store = tx.objectStore('restaurants');
+
+      if (id === 0) {
+        // Returns all restaurants if id passed is 0
+        return store.getAll().then(restaurants => {
+          return restaurants;
+        });
+
+      } else {
+        // Returns restaurant matching id
+        return store.get(id).then(restaurant => {
+          return restaurant;
+        });
+      }
+    });
+  }
+
 }

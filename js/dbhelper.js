@@ -47,12 +47,36 @@ export default class DBHelper {
    }
 
   /**
-   * Fetch all restaurants.
+   * Fetch restaurants by id or returns all restaurants.
+   * Checks idb before fetching from server.
    */
-
-   /* TODO: Delete the comments below once you have checked that errors
-    are properly handled */
   static fetchRestaurants(callback, id = 0) {
+
+    // Checks if result is in database before going to server
+    return offlineController.pullFromDatabase(id).then(restaurant => {
+      // Checks if database returns results for id
+      if (Object.keys(restaurant).length !== 0) {
+        callback(null, restaurant);
+
+      // Throws error otherwise
+      } else {
+        throw 'No match found for id specified or no restaurants in database';
+      }
+    // If error is thrown will go to network for restaurant data
+    }).catch(error => {
+
+      console.log(error);
+      console.log('Going to network for results!');
+
+      // Fetches results from network
+      DBHelper.networkFetchRestaurants(callback, id);
+    });
+  }
+
+  /**
+   * Fetch restaurants by its ID from network.
+   */
+  static networkFetchRestaurants(callback, id) {
 
     let searchUrl;
 
@@ -62,6 +86,7 @@ export default class DBHelper {
       searchUrl = DBHelper.getSpecificRestaurantUrl(id);
     }
 
+    // Fetches restaurant results from server
     fetch(searchUrl)
       .then(response => {
         if (response.status === 200) { // Got a success response from the server!
@@ -78,6 +103,7 @@ export default class DBHelper {
       .catch(error => {
         callback(error, null);
       });
+
   }
 
   /**

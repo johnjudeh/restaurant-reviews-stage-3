@@ -52,17 +52,44 @@ var DBHelper = function () {
     }
 
     /**
-     * Fetch all restaurants.
+     * Fetch restaurants by id or returns all restaurants.
+     * Checks idb before fetching from server.
      */
-
-    /* TODO: Delete the comments below once you have checked that errors
-     are properly handled */
 
   }, {
     key: 'fetchRestaurants',
     value: function fetchRestaurants(callback) {
       var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
+
+      // Checks if result is in database before going to server
+      return offlineController.pullFromDatabase(id).then(function (restaurant) {
+        // Checks if database returns results for id
+        if (Object.keys(restaurant).length !== 0) {
+          callback(null, restaurant);
+
+          // Throws error otherwise
+        } else {
+          throw 'No match found for id specified or no restaurants in database';
+        }
+        // If error is thrown will go to network for restaurant data
+      }).catch(function (error) {
+
+        console.log(error);
+        console.log('Going to network for results!');
+
+        // Fetches results from network
+        DBHelper.networkFetchRestaurants(callback, id);
+      });
+    }
+
+    /**
+     * Fetch restaurants by its ID from network.
+     */
+
+  }, {
+    key: 'networkFetchRestaurants',
+    value: function networkFetchRestaurants(callback, id) {
 
       var searchUrl = void 0;
 
@@ -72,6 +99,7 @@ var DBHelper = function () {
         searchUrl = DBHelper.getSpecificRestaurantUrl(id);
       }
 
+      // Fetches restaurant results from server
       fetch(searchUrl).then(function (response) {
         if (response.status === 200) {
           // Got a success response from the server!
@@ -609,7 +637,7 @@ var OfflineController = function () {
   }, {
     key: 'storeInDatabase',
     value: function storeInDatabase(restaurants) {
-      this._dbPromise.then(function (db) {
+      return this._dbPromise.then(function (db) {
         // Leaves function if there is no database
         if (!db) return;
 
@@ -621,6 +649,36 @@ var OfflineController = function () {
         restaurants.forEach(function (restaurant) {
           store.put(restaurant);
         });
+
+        // Returns promise of transaction
+        return tx.complete;
+      });
+    }
+
+    // Pulls restaurants from database
+
+  }, {
+    key: 'pullFromDatabase',
+    value: function pullFromDatabase(id) {
+      return this._dbPromise.then(function (db) {
+        // Leaves function if there is no database
+        if (!db) return;
+
+        // Creates a new transaction
+        var tx = db.transaction('restaurants');
+        var store = tx.objectStore('restaurants');
+
+        if (id === 0) {
+          // Returns all restaurants if id passed is 0
+          return store.getAll().then(function (restaurants) {
+            return restaurants;
+          });
+        } else {
+          // Returns restaurant matching id
+          return store.get(id).then(function (restaurant) {
+            return restaurant;
+          });
+        }
       });
     }
   }]);
