@@ -41,10 +41,16 @@ export default class OfflineController {
       const tx = db.transaction('restaurants', 'readwrite');
       const store = tx.objectStore('restaurants');
 
-      // Loops through restaurants and stores each in database
-      restaurants.forEach(restaurant => {
-        store.put(restaurant);
-      });
+      // Checks if multiple results were returned
+      if (Array.isArray(restaurants)) {
+        // Loops through restaurants and stores each in database
+        restaurants.forEach(restaurant => {
+          store.put(restaurant);
+        });
+      } else {
+        // Places single result in idb
+        store.put(restaurants);
+      }
 
       // Returns promise of transaction
       return tx.complete;
@@ -57,6 +63,9 @@ export default class OfflineController {
       // Leaves function if there is no database
       if (!db) return;
 
+      // Converts id from number to string
+      id = Number(id);
+
       // Creates a new transaction
       const tx = db.transaction('restaurants');
       const store = tx.objectStore('restaurants');
@@ -68,7 +77,6 @@ export default class OfflineController {
         });
 
       } else {
-        // Returns restaurant matching id
         return store.get(id).then(restaurant => {
           return restaurant;
         });

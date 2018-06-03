@@ -1,3 +1,12 @@
+/**
+ * Import DBHelper which contains idb and sw methods
+ * as well as all functionality for fetch data
+ */
+import DBHelper from './dbhelper';
+
+/**
+ * Define variables used by the map
+ */
 let restaurant;
 
 /**
@@ -23,7 +32,7 @@ window.initMap = () => {
 /**
  * Get current restaurant from page URL.
  */
-fetchRestaurantFromURL = (callback) => {
+function fetchRestaurantFromURL(callback) {
   if (self.restaurant) { // restaurant already fetched!
     callback(null, self.restaurant)
     return;
@@ -43,23 +52,23 @@ fetchRestaurantFromURL = (callback) => {
       callback(null, restaurant)
     });
   }
-};
+}
 
 /**
  * Ensures that only elements that should be focussable are
  */
-removeIframeFocusability = () => {
+function removeIframeFocusability() {
   // Ensures that iframe is not focussable outside of javascript and has a title
   const iframe = document.querySelector('iframe');
   iframe.title = 'Restaurants map';
   iframe.setAttribute('tabindex', '-1');
 
-};
+}
 
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+function fillRestaurantHTML(restaurant = self.restaurant) {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -81,12 +90,12 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fillReviewsHTML();
-};
+}
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
-fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
+function fillRestaurantHoursHTML(operatingHours = self.restaurant.operating_hours) {
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
@@ -109,7 +118,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+function fillReviewsHTML(reviews = self.restaurant.reviews) {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -128,12 +137,12 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
-};
+}
 
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = (review) => {
+function createReviewHTML(review) {
   const li = document.createElement('li');
   const name = document.createElement('p');
   li.className = 'reviews-list__review';
@@ -157,23 +166,23 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
-};
+}
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
+function fillBreadcrumb(restaurant=self.restaurant) {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   li.className = 'breadcrumb__item';
   breadcrumb.appendChild(li);
-};
+}
 
 /**
  * Get a parameter by name from page URL.
  */
-getParameterByName = (name, url) => {
+function getParameterByName(name, url) {
   if (!url)
     url = window.location.href;
   name = name.replace(/[\[\]]/g, '\\$&');
@@ -184,12 +193,12 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-};
+}
 
 /**
  * Returns restaurant image sizes attribute content.
  */
-imageSizesForRestaurant = () => {
+function imageSizesForRestaurant() {
   return (
     `(max-width: 807px) calc(100% - 70px),
     (min-width: 808px) 740px`

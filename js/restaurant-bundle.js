@@ -336,247 +336,7 @@ var DBHelper = function () {
 
 exports.default = DBHelper;
 
-},{"./offlineController":3}],2:[function(require,module,exports){
-'use strict';
-
-var _dbhelper = require('./dbhelper');
-
-var _dbhelper2 = _interopRequireDefault(_dbhelper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Define variables used by the map
- */
-var restaurants = void 0,
-    neighborhoods = void 0,
-    cuisines = void 0,
-    markers = [];
-
-/**
- * Fetch neighborhoods and cuisines as soon as the page is loaded.
- */
-/**
- * Import DBHelper which contains idb and sw methods
- * as well as all functionality for fetch data
- */
-document.addEventListener('DOMContentLoaded', function (event) {
-  fetchNeighborhoods();
-  fetchCuisines();
-});
-
-/**
- * Fetch all neighborhoods and set their HTML.
- */
-function fetchNeighborhoods() {
-  _dbhelper2.default.fetchNeighborhoods(function (error, neighborhoods) {
-    if (error) {
-      // Got an error
-      console.error(error);
-    } else {
-      self.neighborhoods = neighborhoods;
-      fillNeighborhoodsHTML();
-    }
-  });
-}
-
-/**
- * Set neighborhoods HTML.
- */
-function fillNeighborhoodsHTML() {
-  var neighborhoods = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.neighborhoods;
-
-  var select = document.getElementById('neighborhoods-select');
-  neighborhoods.forEach(function (neighborhood) {
-    var option = document.createElement('option');
-    option.innerHTML = neighborhood;
-    option.value = neighborhood;
-    select.append(option);
-  });
-}
-
-/**
- * Fetch all cuisines and set their HTML.
- */
-function fetchCuisines() {
-  _dbhelper2.default.fetchCuisines(function (error, cuisines) {
-    if (error) {
-      // Got an error!
-      console.error(error);
-    } else {
-      self.cuisines = cuisines;
-      fillCuisinesHTML();
-    }
-  });
-};
-
-/**
- * Set cuisines HTML.
- */
-function fillCuisinesHTML() {
-  var cuisines = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.cuisines;
-
-  var select = document.getElementById('cuisines-select');
-
-  cuisines.forEach(function (cuisine) {
-    var option = document.createElement('option');
-    option.innerHTML = cuisine;
-    option.value = cuisine;
-    select.append(option);
-  });
-}
-
-/**
- * Initialize Google map, called from HTML.
- */
-window.initMap = function () {
-  var loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  self.map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  });
-  google.maps.event.addListener(self.map, 'tilesloaded', mapAssistiveStrategy);
-  updateRestaurants();
-};
-
-/**
- * Ensures that only elements that should be focussable are
- */
-function mapAssistiveStrategy() {
-  var iframe = document.querySelector('iframe');
-  var mapDiv = document.querySelectorAll('div[tabindex="0"]')[1];
-
-  // Ensures that iframe is not focussable outside of javascript and has a title
-  iframe.title = 'Restaurants map';
-  iframe.setAttribute('tabindex', '-1');
-
-  // Removes tabindex from mapDiv created by Google Maps
-  setTimeout(function () {
-    mapDiv.setAttribute('tabindex', '-1');
-  }, 1000);
-}
-
-/**
- * Update page and map for current restaurants.
- */
-function updateRestaurants() {
-  var cSelect = document.getElementById('cuisines-select');
-  var nSelect = document.getElementById('neighborhoods-select');
-
-  var cIndex = cSelect.selectedIndex;
-  var nIndex = nSelect.selectedIndex;
-
-  var cuisine = cSelect[cIndex].value;
-  var neighborhood = nSelect[nIndex].value;
-
-  _dbhelper2.default.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, function (error, restaurants) {
-    if (error) {
-      // Got an error!
-      console.error(error);
-    } else {
-      resetRestaurants(restaurants);
-      fillRestaurantsHTML();
-    }
-  });
-}
-
-/**
- * Clear current restaurants, their HTML and remove their map markers.
- */
-function resetRestaurants(restaurants) {
-  // Remove all restaurants
-  self.restaurants = [];
-  var ul = document.getElementById('restaurants-list');
-  ul.innerHTML = '';
-
-  // Remove all map markers
-  markers.forEach(function (m) {
-    return m.setMap(null);
-  });
-  markers = [];
-  self.restaurants = restaurants;
-}
-
-/**
- * Create all restaurants HTML and add them to the webpage.
- */
-function fillRestaurantsHTML() {
-  var restaurants = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurants;
-
-  var ul = document.getElementById('restaurants-list');
-  restaurants.forEach(function (restaurant) {
-    ul.append(createRestaurantHTML(restaurant));
-  });
-  addMarkersToMap();
-}
-
-/**
- * Create restaurant HTML.
- */
-function createRestaurantHTML(restaurant) {
-  var li = document.createElement('li');
-  li.className = 'restaurants-list__card';
-
-  var image = document.createElement('img');
-  image.className = 'restaurants-list__card__img';
-  image.src = _dbhelper2.default.imageUrlForRestaurant(restaurant);
-  image.srcset = _dbhelper2.default.imageSrcSetForRestaurant(restaurant);
-  image.sizes = imageSizesForRestaurant();
-  image.alt = _dbhelper2.default.altTextForRestaurant(restaurant);
-  li.append(image);
-
-  var name = document.createElement('h3');
-  name.className = 'restaurants-list__card__title';
-  name.innerHTML = restaurant.name;
-  li.append(name);
-
-  var neighborhood = document.createElement('p');
-  neighborhood.className = 'restaurants-list__card__address';
-  neighborhood.innerHTML = restaurant.neighborhood;
-  li.append(neighborhood);
-
-  var address = document.createElement('p');
-  address.className = 'restaurants-list__card__address';
-  address.innerHTML = restaurant.address;
-  li.append(address);
-
-  var more = document.createElement('a');
-  more.className = 'restaurants-list__card__link';
-  more.innerHTML = 'View Details';
-  more.href = _dbhelper2.default.urlForRestaurant(restaurant);
-  li.append(more);
-
-  return li;
-}
-
-/**
- * Add markers for current restaurants to the map.
- */
-function addMarkersToMap() {
-  var restaurants = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurants;
-
-  restaurants.forEach(function (restaurant) {
-    // Add marker to the map
-    var marker = _dbhelper2.default.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', function () {
-      window.location.href = marker.url;
-    });
-    markers.push(marker);
-  });
-}
-
-/**
- * Returns restaurant image sizes.
- */
-function imageSizesForRestaurant() {
-  return '(max-width: 419px) calc(100% - 70px),\n    (min-width: 420px) 250px';
-}
-
-},{"./dbhelper":1}],3:[function(require,module,exports){
+},{"./offlineController":2}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -696,7 +456,225 @@ var OfflineController = function () {
 
 exports.default = OfflineController;
 
-},{"./sw/index":4,"idb":5}],4:[function(require,module,exports){
+},{"./sw/index":4,"idb":5}],3:[function(require,module,exports){
+'use strict';
+
+var _dbhelper = require('./dbhelper');
+
+var _dbhelper2 = _interopRequireDefault(_dbhelper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Define variables used by the map
+ */
+var restaurant = void 0;
+
+/**
+ * Initialize Google map, called from HTML.
+ */
+/**
+ * Import DBHelper which contains idb and sw methods
+ * as well as all functionality for fetch data
+ */
+window.initMap = function () {
+  fetchRestaurantFromURL(function (error, restaurant) {
+    if (error) {
+      // Got an error!
+      console.error(error);
+    } else {
+      self.map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: restaurant.latlng,
+        scrollwheel: false
+      });
+      google.maps.event.addListener(self.map, 'tilesloaded', removeIframeFocusability);
+      fillBreadcrumb();
+      _dbhelper2.default.mapMarkerForRestaurant(self.restaurant, self.map);
+    }
+  });
+};
+
+/**
+ * Get current restaurant from page URL.
+ */
+function fetchRestaurantFromURL(callback) {
+  if (self.restaurant) {
+    // restaurant already fetched!
+    callback(null, self.restaurant);
+    return;
+  }
+  var id = getParameterByName('id');
+  if (!id) {
+    // no id found in URL
+    error = 'No restaurant id in URL';
+    callback(error, null);
+  } else {
+    _dbhelper2.default.fetchRestaurantById(id, function (error, restaurant) {
+      self.restaurant = restaurant;
+      if (!restaurant) {
+        console.error(error);
+        return;
+      }
+      fillRestaurantHTML();
+      callback(null, restaurant);
+    });
+  }
+}
+
+/**
+ * Ensures that only elements that should be focussable are
+ */
+function removeIframeFocusability() {
+  // Ensures that iframe is not focussable outside of javascript and has a title
+  var iframe = document.querySelector('iframe');
+  iframe.title = 'Restaurants map';
+  iframe.setAttribute('tabindex', '-1');
+}
+
+/**
+ * Create restaurant HTML and add it to the webpage
+ */
+function fillRestaurantHTML() {
+  var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
+
+  var name = document.getElementById('restaurant-name');
+  name.innerHTML = restaurant.name;
+
+  var address = document.getElementById('restaurant-address');
+  address.innerHTML = restaurant.address;
+
+  var image = document.getElementById('restaurant-img');
+  image.src = _dbhelper2.default.imageUrlForRestaurant(restaurant);
+  image.srcset = _dbhelper2.default.imageSrcSetForRestaurant(restaurant);
+  image.sizes = imageSizesForRestaurant();
+  image.alt = _dbhelper2.default.altTextForRestaurant(restaurant);
+
+  var cuisine = document.getElementById('restaurant-cuisine');
+  cuisine.innerHTML = restaurant.cuisine_type;
+
+  // fill operating hours
+  if (restaurant.operating_hours) {
+    fillRestaurantHoursHTML();
+  }
+  // fill reviews
+  fillReviewsHTML();
+}
+
+/**
+ * Create restaurant operating hours HTML table and add it to the webpage.
+ */
+function fillRestaurantHoursHTML() {
+  var operatingHours = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant.operating_hours;
+
+  var hours = document.getElementById('restaurant-hours');
+  for (var key in operatingHours) {
+    var row = document.createElement('tr');
+    row.className = 'hours-table__row';
+
+    var day = document.createElement('td');
+    day.innerHTML = key;
+    day.className = 'hours-table__row__data';
+    row.appendChild(day);
+
+    var time = document.createElement('td');
+    time.innerHTML = operatingHours[key];
+    time.className = 'hours-table__row__data';
+    row.appendChild(time);
+
+    hours.appendChild(row);
+  }
+};
+
+/**
+ * Create all reviews HTML and add them to the webpage.
+ */
+function fillReviewsHTML() {
+  var reviews = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant.reviews;
+
+  var container = document.getElementById('reviews-container');
+  var title = document.createElement('h3');
+  title.innerHTML = 'Reviews';
+  title.className = 'reviews-title';
+  container.appendChild(title);
+
+  if (!reviews) {
+    var noReviews = document.createElement('p');
+    noReviews.innerHTML = 'No reviews yet!';
+    container.appendChild(noReviews);
+    return;
+  }
+  var ul = document.getElementById('reviews-list');
+  ul.className = 'reviews-list';
+  reviews.forEach(function (review) {
+    ul.appendChild(createReviewHTML(review));
+  });
+  container.appendChild(ul);
+}
+
+/**
+ * Create review HTML and add it to the webpage.
+ */
+function createReviewHTML(review) {
+  var li = document.createElement('li');
+  var name = document.createElement('p');
+  li.className = 'reviews-list__review';
+  name.innerHTML = review.name;
+  name.className = 'reviews-list__review__name';
+  li.appendChild(name);
+
+  var date = document.createElement('p');
+  date.innerHTML = review.date;
+  date.className = 'reviews-list__review__date';
+  li.appendChild(date);
+
+  var rating = document.createElement('p');
+  rating.innerHTML = 'Rating: ' + review.rating;
+  rating.className = 'reviews-list__review__rating';
+  li.appendChild(rating);
+
+  var comments = document.createElement('p');
+  comments.innerHTML = review.comments;
+  comments.className = 'reviews-list__review__comment';
+  li.appendChild(comments);
+
+  return li;
+}
+
+/**
+ * Add restaurant name to the breadcrumb navigation menu
+ */
+function fillBreadcrumb() {
+  var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
+
+  var breadcrumb = document.getElementById('breadcrumb');
+  var li = document.createElement('li');
+  li.innerHTML = restaurant.name;
+  li.className = 'breadcrumb__item';
+  breadcrumb.appendChild(li);
+}
+
+/**
+ * Get a parameter by name from page URL.
+ */
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/**
+ * Returns restaurant image sizes attribute content.
+ */
+function imageSizesForRestaurant() {
+  return '(max-width: 807px) calc(100% - 70px),\n    (min-width: 808px) 740px';
+};
+
+},{"./dbhelper":1}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1118,4 +1096,4 @@ exports.default = ServiceWorker;
   }
 }());
 
-},{}]},{},[2]);
+},{}]},{},[3]);
