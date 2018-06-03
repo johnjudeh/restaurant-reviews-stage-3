@@ -363,6 +363,7 @@ var restaurants = void 0,
 document.addEventListener('DOMContentLoaded', function (event) {
   fetchNeighborhoods();
   fetchCuisines();
+  setEventsForFilters();
 });
 
 /**
@@ -424,6 +425,18 @@ function fillCuisinesHTML() {
     option.value = cuisine;
     select.append(option);
   });
+}
+
+/**
+ * Adds event listeners to neighborhood and
+ * cuisine filters.
+ */
+function setEventsForFilters() {
+  var neighborhoodFilter = document.getElementById('neighborhoods-select');
+  var cuisineFilter = document.getElementById('cuisines-select');
+
+  neighborhoodFilter.addEventListener('change', updateRestaurants);
+  cuisineFilter.addEventListener('change', updateRestaurants);
 }
 
 /**

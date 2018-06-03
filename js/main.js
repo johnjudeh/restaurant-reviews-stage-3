@@ -18,6 +18,7 @@ let restaurants,
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  setEventsForFilters();
 });
 
 /**
@@ -73,6 +74,18 @@ function fillCuisinesHTML(cuisines = self.cuisines) {
     option.value = cuisine;
     select.append(option);
   });
+}
+
+/**
+ * Adds event listeners to neighborhood and
+ * cuisine filters.
+ */
+function setEventsForFilters() {
+  const neighborhoodFilter = document.getElementById('neighborhoods-select');
+  const cuisineFilter = document.getElementById('cuisines-select');
+
+  neighborhoodFilter.addEventListener('change', updateRestaurants);
+  cuisineFilter.addEventListener('change', updateRestaurants);
 }
 
 /**
