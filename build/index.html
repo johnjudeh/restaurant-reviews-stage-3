@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#252831">
+  <title>Restaurant Reviews</title>
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+  <header>
+    <nav>
+      <h1 class="logo-text"><a class="logo-link" href="/">Restaurant Reviews</a></h1>
+    </nav>
+  </header>
+
+  <a href="#filter-options" class="skip-link">Skip map to main content</a>
+
+  <main id="maincontent">
+    <section id="map-container">
+      <div class="map-div" id="map" tabindex="0" role="application"
+        aria-label="Map with restaurants"></div>
+    </section>
+
+    <section class="filter-options" id="filter-options" tabindex="-1">
+      <h2 class="filter-options__header">Filter Results</h2>
+
+      <select class="filter-options__dropdown" id="neighborhoods-select" name="neighborhoods"
+        aria-label="Neighborhoods filter " aria-controls="restaurants-list">
+        <option value="all">All Neighborhoods</option>
+      </select>
+
+      <select class="filter-options__dropdown" id="cuisines-select" name="cuisines"
+        aria-label="Cuisines filter" aria-controls="restaurants-list">
+        <option value="all">All Cuisines</option>
+      </select>
+    </section>
+
+    <section>
+      <h2 class="restaurants-list-title">Restaurants</h2>
+      <ul class="restaurants-list" id="restaurants-list" aria-live="polite"
+        aria-relevant="additions"></ul>
+    </section>
+
+    <div class="sw-toast" id="toastDiv" hidden role="dialog" aria-labelledby="toastMessage"
+      aria-live="polite">
+      <p class="toastMessage" id="toastMessage">New version available</p>
+      <button class="toastButton" id="swRefresh">Refresh</button>
+      <button class="toastButton" id="swDismiss">Dismiss</button>
+    </div>
+
+  </main>
+
+  <footer id="footer">
+    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+
+  <script type="application/javascript" charset="utf-8" src="js/main-bundle.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAspbBXuVr70_LSAzKY1YZjdjfyYc8ccyQ&libraries=places&callback=initMap"></script>
+
+</body>
+
+</html>

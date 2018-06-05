@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#252831">
+  <title>Restaurant Info</title>
+  <!-- Normalize.css for better cross-browser consistency -->
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <!-- Main CSS file -->
+  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+  <header>
+    <nav>
+      <h1 class="logo-text"><a class="logo-link" href="/">Restaurant Reviews</a></h1>
+
+      <ul class="breadcrumb" id="breadcrumb">
+        <li class="breadcrumb__item"><a class="breadcrumb__item__link" href="/">Home</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <a href="#restaurant-container" class="skip-link restaurant-skip">Skip map to main content</a>
+
+  <main id="maincontent">
+    <section id="map-container">
+      <div class="map-div map-reviews" id="map" tabindex="0" role="application"
+        aria-label="Restaurant map"></div>
+    </section>
+
+    <section class="restaurant" id="restaurant-container" tabindex="-1">
+      <h2 class="restaurant__name" id="restaurant-name"></h2>
+      <img class="restaurant__image" id="restaurant-img">
+      <p class="restaurant__cuisine" id="restaurant-cuisine"></p>
+      <p class="restaurant__address" id="restaurant-address"></p>
+      <table class="restaurant__hours-table" id="restaurant-hours"></table>
+    </section>
+
+    <section class="reviews-container" id="reviews-container">
+      <ul id="reviews-list"></ul>
+    </section>
+
+    <div class="sw-toast" id="toastDiv" hidden role="dialog" aria-labelledby="toastMessage"
+      aria-live="polite">
+      <p class="toastMessage" id="toastMessage">New version available</p>
+      <button class="toastButton" id="swRefresh">Refresh</button>
+      <button class="toastButton" id="swDismiss">Dismiss</button>
+    </div>
+  </main>
+
+  <footer id="footer">
+    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+
+  <!-- Main javascript file -->
+  <script type="text/javascript" src="js/restaurant-bundle.js"></script>
+  <!-- Google Maps -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAspbBXuVr70_LSAzKY1YZjdjfyYc8ccyQ&libraries=places&callback=initMap"></script>
+
+</body>
+
+</html>
