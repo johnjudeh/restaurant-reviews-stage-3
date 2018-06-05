@@ -7,14 +7,14 @@
 If you want to take a closer look at the code, then follow the steps
 below:
 
-1. Clone the repository using `git clone https://github.com/johnjudeh/restaurant-reviews-stage-1.git`
+1. Clone the repository using `git clone https://github.com/johnjudeh/restaurant-reviews-stage-2.git`
 
 2. Grab a free Google Maps Javascript API key from the
 [Google API Console](https://console.developers.google.com/apis/). You will need
 to put this key in place of the `YOUR_API_KEY` in the Google Maps script in both
 HTML documents
 
-3. In the app folder, start up a simple HTTP server to serve up the site files on your local computer. Python has some simple tools to do this, and you don't even need to know Python. For most people, it's already installed on your computer.  
+3. In the app/build folder, start up a simple HTTP server to serve up the site files on your local computer. Python has some simple tools to do this, and you don't even need to know Python. For most people, it's already installed on your computer.  
 In a terminal, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 8000`. For Python 3.x, you can use `python -m http.server 8000`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software
 
 4. With your server running, visit the site: `http://localhost:8000`
@@ -69,3 +69,46 @@ and the **Cache Interface**. The tasks achieved were:
 - Listening for new service workers and notifying the user when the new worker
   was waiting. This was achieved using a toast message
 - Allowing the service worker to skip waiting if instructed by the user
+
+### Stage 2
+
+#### Project Summary
+
+In the previous stage of the project, the data served for the app was available
+in a local JSON file. For this stage I was asked to change the source of the data
+to a server running locally on my computer and optimise the app's performance in
+Lighthouse audit in Chrome DevTools. The goals were:
+
+1. Pull the site data from a server using Asynchronous JavaScript requests
+2. Store the data into an IndexedDB database to allow the site to function offline
+3. Optimise the code using tools such as Gulp to ensure it meets certain benchmarks
+in the Lighthouse audit
+
+#### 1. Servers and Asynchronous JavaScript
+
+The server being used is available to be cloned from
+`https://github.com/udacity/mws-restaurant-stage-2.git`. This was created by Udacity
+instructors and is only being used to simulate having a back-end in the app. To
+create the asynchronous request I used the Fetch API and its promise interface.
+
+#### 2. Storing and Serving Assets from an IndexedDB Database
+
+To avoid using the IndexedDB Requests in favour of ES6 promises, I used a small
+library called [IndexedDB Promised](https://github.com/jakearchibald/idb). This
+library mirrors IndexedDB but replaces IDBRequests with promises. The tasks
+performed in this part of the project were:
+
+- Creating an IndexedDB database on the app to store restaurant data
+- Ensuring that any data fetched from the server is stored in the database
+- Serving any data requested by the user agent from the database if it is available
+
+#### 3. Optimising the Web App
+
+To achieve the best user experience, I used Gulp to create a build process that
+helps improve my productivity and the site's performance. The tasks performed were:
+
+- Live editing with file changes being automatically rebuilt and the browser automatically
+reloading
+- Images compressed using lossless compression for production
+- CSS autoprefixed and minified
+- JS scripts transpiled through babel (ES6 --> ES5), browserifyed and minified
