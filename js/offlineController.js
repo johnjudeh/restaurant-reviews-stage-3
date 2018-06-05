@@ -1,9 +1,13 @@
-// Imports the IndexedDB Promised node package
-// Imports the ServiceWorker class from sw/index.js
+/**
+ * Imports the IndexedDB Promised node package
+ * Imports the ServiceWorker class from sw/index.js
+ */
 import idb from 'idb';
 import ServiceWorker from './sw/index';
 
-// Manages all tasks needed for offline functionality
+/**
+ * Manages all tasks needed for offline functionality
+ */
 export default class OfflineController {
 
   constructor() {
@@ -22,12 +26,11 @@ export default class OfflineController {
       return Promise.Resolve();
     }
 
-    // Create / open the database and create / open Object Store
+    // Create / open the database and create / open object store
     return idb.open(this.IDB_DATABASE_NAME, 1, upgradeDB => {
       const store = upgradeDB.createObjectStore('restaurants', {
         keyPath: 'id'
       });
-      // store.createIndex();
     });
   }
 

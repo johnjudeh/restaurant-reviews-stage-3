@@ -34,7 +34,7 @@ export default class DBHelper {
    * All Restaurants URL From Server.
    */
   static get ALL_RESTAURANTS_URL() {
-    const port = 1337 // Change this to your server port
+    const port = 1337
     return `http://localhost:${port}/restaurants`;
   }
 
@@ -65,7 +65,7 @@ export default class DBHelper {
     // If error is thrown will go to network for restaurant data
     }).catch(error => {
 
-      console.log(error);
+      console.error(error);
       console.log('Going to network for results!');
 
       // Fetches results from network
@@ -108,7 +108,6 @@ export default class DBHelper {
 
   /**
    * Fetch a restaurant by its ID.
-   * TODO: delete the commented out code if it is not needed
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
@@ -118,12 +117,6 @@ export default class DBHelper {
         // callback(error, null);
       } else {
         callback(null, restaurants);
-        // const restaurant = restaurants.find(r => r.id == id);
-        // if (restaurant) { // Got the restaurant
-        //   callback(null, restaurant);
-        // } else { // Restaurant does not exist in the database
-        //   callback('Restaurant does not exist', null);
-        // }
       }
     }, false, id);
   }

@@ -4,12 +4,12 @@
  */
 export default class ServiceWorker {
   constructor() {
-    this.registerServiceWorker();
+    this._registerServiceWorker();
   }
 
   // Registers service worker and checks to see if any new
   // service workers are waiting
-  registerServiceWorker() {
+  _registerServiceWorker() {
     // Exits if browser does not support service worker
     if (!navigator.serviceWorker) return;
     const serviceWorker = this;
@@ -23,21 +23,21 @@ export default class ServiceWorker {
       // Handles waiting service worker
       if (reg.waiting) {
         console.log('Service Worker is Waiting');
-        this.updateReady(reg.waiting);
+        this._updateReady(reg.waiting);
         return;
       }
 
       // Handles installing service worker
       if (reg.installing) {
         console.log('Service Worker is Installing!');
-        this.trackInstalling(reg.installing);
+        this._trackInstalling(reg.installing);
         return;
       }
 
       // Listens for updates in service worker
       reg.addEventListener('updatefound', () => {
         console.log('Service Worker is Installing!');
-        serviceWorker.trackInstalling(reg.installing);
+        serviceWorker._trackInstalling(reg.installing);
       })
 
     }).catch((error) => {
@@ -45,16 +45,16 @@ export default class ServiceWorker {
     });
   }
 
-  trackInstalling(worker) {
+  _trackInstalling(worker) {
     worker.addEventListener('statechange', () => {
       if (worker.state === 'installed'){
         console.log('Service Worker is Waiting');
-        serviceWorker.updateReady(worker);
+        serviceWorker._updateReady(worker);
       }
     })
   }
 
-  updateReady(worker) {
+  _updateReady(worker) {
     const toastDiv = document.getElementById('toastDiv');
     const swDismissBtn = document.getElementById('swDismiss');
     const swRefreshBtn = document.getElementById('swRefresh');
