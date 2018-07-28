@@ -46,6 +46,18 @@ export default class DBHelper {
      return `http://localhost:${port}/restaurants/${id}`;
    }
 
+   /**
+    * Update favorite restaurants in database.
+    */
+   static updateFavoriteRestaurants(restaurant, isFavourite) {
+     // Updates server database with new is_favorite value
+     fetch(DBHelper.getSpecificRestaurantUrl(restaurant.id) + '?is_favorite=' + isFavourite, {
+       method: 'PUT'
+     })
+     // Updates IDB database with new is_favorite value
+     offlineController.updateDatabaseRecord(restaurant.id, 'is_favorite', isFavourite);
+   }
+
   /**
    * Fetch restaurants by id or returns all restaurants.
    * Checks idb before fetching from server.

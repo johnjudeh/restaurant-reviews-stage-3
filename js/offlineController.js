@@ -87,4 +87,29 @@ export default class OfflineController {
     });
   }
 
+  // Updates the database values
+  updateDatabaseRecord(id, propName, propValue) {
+    return this._dbPromise.then(db => {
+      // Leaves function if there is no database
+      if (!db) return;
+
+      // Converts id from number to string
+      id = Number(id);
+
+      // Creates a new transaction
+      const tx = db.transaction('restaurants', 'readwrite');
+      const store = tx.objectStore('restaurants');
+
+      // Get restaurant, update value and put back in database
+      store.get(id).then(restaurant => {
+        restaurant[propName] = propValue;
+        store.put(restaurant);
+      });
+
+      // Returns promise of transaction
+      return tx.complete;
+
+    })
+  }
+
 }

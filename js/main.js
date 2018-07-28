@@ -178,6 +178,27 @@ function createRestaurantHTML(restaurant) {
   const li = document.createElement('li');
   li.className = 'restaurants-list__card';
 
+  const favouriteIcon = document.createElement('i');
+  favouriteIcon.className = 'far fa-star restaurants-list__card__fav-restaurant';
+  favouriteIcon.classList.toggle('starred', Boolean(restaurant.is_favorite));
+  favouriteIcon.addEventListener('click', () => {
+    let isFavourite;
+
+    // Checks if restaurant is already starred
+    if (favouriteIcon.classList.contains('starred')) {
+      favouriteIcon.classList.remove('starred');
+      isFavourite = false;
+
+    } else {
+      favouriteIcon.classList.add('starred');
+      isFavourite = true;
+    }
+
+    DBHelper.updateFavoriteRestaurants(restaurant, isFavourite);
+  });
+  li.append(favouriteIcon);
+
+
   const image = document.createElement('img');
   image.className = 'restaurants-list__card__img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
