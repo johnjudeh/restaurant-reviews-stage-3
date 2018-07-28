@@ -262,11 +262,6 @@ nav {
 	border-bottom-left-radius: 5px;
 }
 
-.starred {
-	font-weight: bold;
-	color: pink;
-}
-
 .restaurants-list__card__img {
   width: 100%;
 	border-top-left-radius: 1.5em;
@@ -375,6 +370,34 @@ nav {
 
 
 /* ============== Restaurant Details -- Reviews ============== */
+
+.restaurant {
+	position: relative;
+}
+
+.restaurant:focus {
+	outline: none;
+}
+
+.restaurant__image-container {
+	position: relative;
+}
+
+.restaurant__fav-restaurant {
+	position: absolute;
+	font-size: 40px;
+	color: #fff;
+	top: 0;
+	right: 0;
+	background-color: #333;
+	padding: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.starred {
+	font-weight: bold;
+	color: pink;
+}
 
 .reviews-container {
 	padding: 20px 35px 20px;
@@ -542,6 +565,29 @@ nav {
 
 	.restaurant,
 	.reviews-list {
+		width: 808px;
+		margin: 0 auto;
+	}
+
+	.restaurant__fav-restaurant {
+		top: -58px;
+		right: 30px;
+		font-size: 20px;
+		padding: 5px 15px;
+		border-radius: 5px;
+	}
+
+	.restaurant__fav-restaurant:after {
+	  content: 'favourite';
+	  font-size: 20px;
+	  font-family: Arial;
+	  margin: 0 0 0 6px;
+	  font-weight: normal;
+	}
+
+	/* ============== Restaurant Details -- Reviews ============== */
+
+	.reviews-container {
 		width: 808px;
 		margin: 0 auto;
 	}

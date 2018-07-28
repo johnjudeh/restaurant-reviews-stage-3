@@ -72,6 +72,24 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  const favouriteIcon = document.querySelector('.restaurant__fav-restaurant');
+  favouriteIcon.classList.toggle('starred', Boolean(restaurant.is_favorite));
+  favouriteIcon.addEventListener('click', () => {
+    let isFavourite;
+
+    // Checks if restaurant is already starred
+    if (favouriteIcon.classList.contains('starred')) {
+      favouriteIcon.classList.remove('starred');
+      isFavourite = false;
+
+    } else {
+      favouriteIcon.classList.add('starred');
+      isFavourite = true;
+    }
+
+    DBHelper.updateFavoriteRestaurants(restaurant, isFavourite);
+  });
+
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
