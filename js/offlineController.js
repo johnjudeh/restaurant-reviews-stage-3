@@ -27,15 +27,26 @@ export default class OfflineController {
     }
 
     // Create / open the database and create / open object store
-    return idb.open(this.IDB_DATABASE_NAME, 1, upgradeDB => {
-      const store = upgradeDB.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
+    return idb.open(this.IDB_DATABASE_NAME, 2, upgradeDB => {
+      switch (upgradeDB.oldVersion) {
+        // Runs when browser has never heard of the database
+        case 0:
+          const restaurantsStore = upgradeDB.createObjectStore('restaurants', {
+            keyPath: 'id'
+          });
+
+        // Runs when browser has version 1
+        case 1:
+          const reviewsStore = upgradeDB.createObjectStore('reviews');
+      }
+
     });
   }
 
+  // =========== Restaurant Store Functionality ===========
+
   // Pass restaurants to idb Store
-  storeInDatabase(restaurants) {
+  storeInRestaurantDB(restaurants) {
     return this._dbPromise.then(db => {
       // Leaves function if there is no database
       if (!db) return;
@@ -61,7 +72,7 @@ export default class OfflineController {
   }
 
   // Pulls restaurants from database
-  pullFromDatabase(id) {
+  pullFromRestaurantDB(id) {
     return this._dbPromise.then(db => {
       // Leaves function if there is no database
       if (!db) return;
@@ -88,7 +99,7 @@ export default class OfflineController {
   }
 
   // Updates the database values
-  updateDatabaseRecord(id, propName, propValue) {
+  updateRestaurantDBRecord(id, propName, propValue) {
     return this._dbPromise.then(db => {
       // Leaves function if there is no database
       if (!db) return;
@@ -110,6 +121,46 @@ export default class OfflineController {
       return tx.complete;
 
     })
+  }
+
+  // =========== Reviews Database Functionality ===========
+
+  // Pass reviews to idb Store
+  storeInReviewsDB(reviews, restaurantId) {
+    return this._dbPromise.then(db => {
+      // Leaves function if there is no database
+      if (!db) return;
+
+      // Creates a new transaction
+      const tx = db.transaction('reviews', 'readwrite');
+      const store = tx.objectStore('reviews');
+
+      // Adds all reviews under restaurant id
+      store.put(reviews, Number(restaurantId));
+
+      // Returns promise of transaction
+      return tx.complete;
+    })
+  }
+
+  // Pulls reviews from database
+  pullFromReviewsDB(id) {
+    return this._dbPromise.then(db => {
+      // Leaves function if there is no database
+      if (!db) return;
+
+      // Converts id from number to string
+      id = Number(id);
+
+      // Creates a new transaction
+      const tx = db.transaction('reviews');
+      const store = tx.objectStore('reviews');
+
+      return store.get(id).then(reviews => {
+        return reviews;
+      });
+
+    });
   }
 
 }

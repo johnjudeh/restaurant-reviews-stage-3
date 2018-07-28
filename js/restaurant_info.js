@@ -55,6 +55,31 @@ function fetchRestaurantFromURL(callback) {
 }
 
 /**
+ * Get current restaurant from page URL.
+ */
+function fetchRestaurantReviewsFromURL(callback) {
+  if (self.reviews) { // restaurant already fetched!
+    callback(null, self.reviews)
+    return;
+  }
+  const id = getParameterByName('id');
+  if (!id) { // no id found in URL
+    error = 'No restaurant id in URL'
+    callback(error, null);
+  } else {
+    DBHelper.fetchRestaurantReviews(id, (error, reviews) => {
+      self.reviews = reviews;
+      if (!reviews) {
+        console.log(reviews);
+        console.error(error);
+        return;
+      }
+      callback(null, reviews)
+    });
+  }
+}
+
+/**
  * Ensures that only elements that should be focussable are
  */
 function removeIframeFocusability() {
@@ -107,7 +132,13 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fetchRestaurantReviewsFromURL((error, reviews) => {
+    if (!reviews) {
+      console.error(error);
+    } else {
+      fillReviewsHTML();
+    }
+  })
 }
 
 /**
@@ -136,7 +167,7 @@ function fillRestaurantHoursHTML(operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-function fillReviewsHTML(reviews = self.restaurant.reviews) {
+function fillReviewsHTML(reviews = self.reviews) {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -169,7 +200,7 @@ function createReviewHTML(review) {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = Date(review.updatedAt);
   date.className = 'reviews-list__review__date';
   li.appendChild(date);
 

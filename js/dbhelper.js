@@ -31,10 +31,17 @@ const RESTARAUNT_ALT_TEXT = [
  */
 export default class DBHelper {
   /**
+   * Server port.
+   */
+  static get SERVER_PORT() {
+    return 1337; // Change this to your server port
+  }
+
+  /**
    * All Restaurants URL From Server.
    */
   static get ALL_RESTAURANTS_URL() {
-    const port = 1337
+    const port = DBHelper.SERVER_PORT;
     return `http://localhost:${port}/restaurants`;
   }
 
@@ -42,8 +49,16 @@ export default class DBHelper {
    * Specific Restaurant URL From Server.
    */
    static getSpecificRestaurantUrl(id) {
-     const port = 1337 // Change this to your server port
+     const port = DBHelper.SERVER_PORT;
      return `http://localhost:${port}/restaurants/${id}`;
+   }
+
+   /**
+    * Specific Restaurant Reviews URL From Server.
+    */
+   static getReviewsForRestuarantURL(id) {
+     const port = DBHelper.SERVER_PORT;
+     return `http://localhost:${port}/reviews/?restaurant_id=${id}`;
    }
 
    /**
@@ -55,7 +70,7 @@ export default class DBHelper {
        method: 'PUT'
      })
      // Updates IDB database with new is_favorite value
-     offlineController.updateDatabaseRecord(restaurant.id, 'is_favorite', isFavourite);
+     offlineController.updateRestaurantDBRecord(restaurant.id, 'is_favorite', isFavourite);
    }
 
   /**
@@ -64,7 +79,7 @@ export default class DBHelper {
    */
   static fetchRestaurants(callback, getAllRestaurants = true, id = 0) {
     // Checks if result is in database before going to server
-    return offlineController.pullFromDatabase(id).then(restaurant => {
+    return offlineController.pullFromRestaurantDB(id).then(restaurant => {
       // Checks if the restaurants have already been fetched or not
       if ( (getAllRestaurants && Object.keys(restaurant).length === 10) ||
         (!getAllRestaurants && Object.keys(restaurant).length !== 0) ) {
@@ -109,8 +124,61 @@ export default class DBHelper {
         }
       })
       .then(restaurants => {
-        offlineController.storeInDatabase(restaurants);
+        offlineController.storeInRestaurantDB(restaurants);
         callback(null, restaurants);
+      })
+      .catch(error => {
+        callback(error, null);
+      });
+
+  }
+
+  /**
+   * Fetch reviews by restaurant id.
+   * Checks idb before fetching from server.
+   */
+  static fetchRestaurantReviews(id, callback) {
+    // Checks if result is in database before going to server
+    return offlineController.pullFromReviewsDB(id).then(reviews => {
+      // Checks if the restaurants have already been fetched or not
+      if (reviews) {
+        callback(null, reviews);
+
+      // Throws error otherwise
+      } else {
+        throw 'No match found for id specified or no reviews in database';
+      }
+    // If error is thrown will go to network for reviews data
+    }).catch(error => {
+
+      console.error(error);
+      console.log('Going to network for results!');
+
+      // Fetches results from network
+      DBHelper.networkFetchRestaurantReviews(callback, id);
+    });
+  }
+
+  /**
+   * Fetch reviews by restaurant ID from network.
+   */
+  static networkFetchRestaurantReviews(callback, id) {
+
+    let searchUrl = DBHelper.getReviewsForRestuarantURL(id);
+
+    // Fetches restaurant results from server
+    fetch(searchUrl)
+      .then(response => {
+        if (response.status === 200) { // Got a success response from the server!
+          return response.json();
+        } else { // Oops!. Got an error from server.
+          const error = (`Request failed. Returned status of ${response.status}`);
+          throw error;
+        }
+      })
+      .then(reviews => {
+        offlineController.storeInReviewsDB(reviews, id);
+        callback(null, reviews);
       })
       .catch(error => {
         callback(error, null);
