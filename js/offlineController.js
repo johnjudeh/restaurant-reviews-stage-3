@@ -164,4 +164,29 @@ export default class OfflineController {
     });
   }
 
+  // Updates the reviews database values
+  updateReviewsDBRecord(id, review, addReview = true) {
+    return this._dbPromise.then(db => {
+      // Leaves function if there is no database
+      if (!db) return;
+
+      // Converts id from number to string
+      id = Number(id);
+
+      // Creates a new transaction
+      const tx = db.transaction('reviews', 'readwrite');
+      const store = tx.objectStore('reviews');
+
+      // Get restaurant, update value and put back in database
+      store.get(id).then(reviews => {
+        reviews.push(review);
+        store.put(reviews, id);
+      });
+
+      // Returns promise of transaction
+      return tx.complete;
+
+    })
+  }
+
 }

@@ -170,10 +170,16 @@ function fillRestaurantHoursHTML(operatingHours = self.restaurant.operating_hour
 function fillReviewsHTML(reviews = self.reviews) {
   const container = document.getElementById('reviews-container');
   const formReviewsSeperator = document.querySelector('.form-reviews-seperator');
+  const newReviewSubmit = document.querySelector('.reviews-form__submit');
+  const form = document.querySelector('.reviews-form');
+
+  // Adds review to databases and updates page with new review
+  form.addEventListener('submit', sendNewReviewToDB);
+
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   title.className = 'reviews-title';
-  container.append(title);
+  container.prepend(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -188,6 +194,37 @@ function fillReviewsHTML(reviews = self.reviews) {
   });
 
   formReviewsSeperator.after(ul);
+}
+
+/**
+ * Sends review to databse after submit button is clicked
+ */
+function sendNewReviewToDB(event) {
+  // Prevents form submission from sending a Request
+  event.preventDefault();
+
+  const form = this;
+  const formData = new FormData(form);
+  let requestBody = {
+    restaurant_id: getParameterByName('id')
+  };
+
+  // Loop through form data and store in object
+  formData.forEach((value, key) => {
+    requestBody[key] = value;
+  });
+
+  // Adds new review to IDB database and server database
+  DBHelper.addNewReview(self.restaurant, requestBody, (error, review) => {
+    if (error) { // Got an error!
+      console.error(error);
+    } else {
+      // Add review to reviews list
+      const ul = document.getElementById('reviews-list');
+      ul.appendChild(createReviewHTML(review));
+    }
+  });
+
 }
 
 /**

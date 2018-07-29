@@ -46,6 +46,15 @@ export default class DBHelper {
   }
 
   /**
+   * Add Review URL to Server
+   */
+  static get REVIEWS_URL() {
+    const port = DBHelper.SERVER_PORT;
+    return `http://localhost:${port}/reviews`;
+    // return 'http://localhost:9999';
+  }
+
+  /**
    * Specific Restaurant URL From Server.
    */
    static getSpecificRestaurantUrl(id) {
@@ -71,6 +80,33 @@ export default class DBHelper {
      })
      // Updates IDB database with new is_favorite value
      offlineController.updateRestaurantDBRecord(restaurant.id, 'is_favorite', isFavourite);
+   }
+
+   /**
+    * Update reviews in database with new review.
+    */
+   static addNewReview(restaurant, requestBody, callback) {
+     // Updates server database with new is_favorite value
+     fetch(DBHelper.REVIEWS_URL, {
+       method: 'POST',
+       body: JSON.stringify(requestBody)
+     }).then(response => {
+       if (response.status === 201) { // Got a success response from the server!
+         return response.json();
+       } else { // Oops!. Got an error from server.
+         const error = (`Request failed. Returned status of ${response.status}`);
+         throw error;
+       }
+     })
+     .then(review => {
+       // Updates IDB database with new review
+       offlineController.updateReviewsDBRecord(restaurant.id, review);
+       callback(null, review);
+     })
+     .catch(error => {
+       callback(error, null);
+     });
+
    }
 
   /**
