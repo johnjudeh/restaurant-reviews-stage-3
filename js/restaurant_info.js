@@ -169,15 +169,16 @@ function fillRestaurantHoursHTML(operatingHours = self.restaurant.operating_hour
  */
 function fillReviewsHTML(reviews = self.reviews) {
   const container = document.getElementById('reviews-container');
+  const formReviewsSeperator = document.querySelector('.form-reviews-seperator');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   title.className = 'reviews-title';
-  container.appendChild(title);
+  container.append(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
+    formReviewsSeperator.after(noReviews);
     return;
   }
   const ul = document.getElementById('reviews-list');
@@ -185,7 +186,8 @@ function fillReviewsHTML(reviews = self.reviews) {
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
-  container.appendChild(ul);
+
+  formReviewsSeperator.after(ul);
 }
 
 /**
@@ -200,7 +202,8 @@ function createReviewHTML(review) {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = Date(review.updatedAt);
+  const dateString = new Date(review.updatedAt);
+  date.innerHTML = dateString.toLocaleString();
   date.className = 'reviews-list__review__date';
   li.appendChild(date);
 

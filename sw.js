@@ -33,10 +33,12 @@ self.addEventListener('activate', event => {
 
 // Handles how a page makes fetch requests
 self.addEventListener('fetch', event => {
-  const requestUrl = new URL(event.request.url);
+  const request = event.request;
+  const requestUrl = new URL(request.url);
 
   // Checks if request is from page origin
-  if (requestUrl.origin === location.origin) {
+  if (requestUrl.origin === location.origin
+      && request.method !== 'POST' ) {
 
     event.respondWith(
       caches.open(staticCacheName).then(cache => {
@@ -54,6 +56,7 @@ self.addEventListener('fetch', event => {
         })
       })
     );
+
   }
 });
 

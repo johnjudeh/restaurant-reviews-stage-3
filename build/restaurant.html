@@ -46,6 +46,23 @@
 
     <section class="reviews-container" id="reviews-container">
       <ul id="reviews-list"></ul>
+      <form method="POST" action="http://localhost:9999" id="reviews-form" class="reviews-form">
+        <h3>Leave a review:</h3>
+        <label class="reviews-form__label">
+          Name:
+          <input type="text" placeholder="John Smith" name="name" class="reviews-form__name" required>
+        </label>
+        <label class="reviews-form__label">
+          Rating:
+          <input type="number" name="rating" min="1" max="5" class="reviews-form__rating" placeholder="1-5" required>
+        </label>
+        <label class="reviews-form__label reviews-form__comments-label">
+          Review:
+          <textarea name="comments" class="reviews-form__comments" placeholder="Let others know about your experience here!" required></textarea>
+        </label>
+        <button class="reviews-form__submit">Submit</button>
+      </form>
+      <hr class="form-reviews-seperator">
     </section>
 
     <div class="sw-toast" id="toastDiv" hidden role="dialog" aria-labelledby="toastMessage"

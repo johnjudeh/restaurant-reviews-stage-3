@@ -37,6 +37,28 @@ gulp.task('default', ['copy-html', 'copy-images', 'copy-icons', 'copy-manifest',
 });
 
 /**
+ * Task used to create production-ready code and run
+ */
+ gulp.task('serve', ['build'], () => {
+   // Watches files and reruns tasks if any change
+   gulp.watch('css/*.css', ['styles-prod'])
+     .on('change', browserSync.reload);
+   gulp.watch('js/**/*.js', ['scripts-prod'])
+     .on('change', browserSync.reload);
+   gulp.watch('./*.html', ['copy-html'])
+     .on('change', browserSync.reload);
+   gulp.watch('./manifest.json', ['copy-manifest'])
+     .on('change', browserSync.reload);
+   gulp.watch('./sw.js', ['copy-sw'])
+     .on('change', browserSync.reload);
+
+   // Creates server from build directory
+   browserSync.init({
+     server: './build'
+   });
+ });
+
+/**
  * Task used to create production-ready code
  */
 gulp.task('build', [
