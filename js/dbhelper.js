@@ -76,13 +76,29 @@ export default class DBHelper {
     // TODO: Add callback to this so it works in the same way as other functions
     // Currently it puts the new information in the database regardless of if the
     // Server request is successful
-   static updateFavoriteRestaurants(restaurant, isFavourite) {
+   static updateFavoriteRestaurants(restaurant, isFavourite, callback) {
      // Updates server database with new is_favorite value
      fetch(DBHelper.getSpecificRestaurantUrl(restaurant.id) + '?is_favorite=' + isFavourite, {
        method: 'PUT'
+     }).then(response => {
+       if (response.status === 200) { // Got a success response from the server!
+         return response.json();
+       } else { // Oops!. Got an error from server.
+         const error = (`Request failed. Returned status of ${response.status}`);
+         throw error;
+       }
      })
-     // Updates IDB database with new is_favorite value
-     offlineController.updateRestaurantDBRecord(restaurant.id, 'is_favorite', isFavourite);
+     .then(restaurantResponse => {
+       // Updates IDB database with updated restaurant (with new is_fav value)
+       offlineController.storeInRestaurantDB(restaurantResponse);
+       // offlineController.updateRestaurantDBRecord(restaurant.id, 'is_favorite', isFavourite);
+       callback(null, restaurantResponse);
+     })
+     .catch(error => {
+       // console.log(error);
+       // callback(error, null);
+     });
+
    }
 
    /**

@@ -70,7 +70,6 @@ function fetchRestaurantReviewsFromURL(callback) {
     DBHelper.fetchRestaurantReviews(id, (error, reviews) => {
       self.reviews = reviews;
       if (!reviews) {
-        console.log(reviews);
         console.error(error);
         return;
       }
@@ -98,21 +97,25 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
   name.innerHTML = restaurant.name;
 
   const favouriteIcon = document.querySelector('.restaurant__fav-restaurant');
-  favouriteIcon.classList.toggle('starred', Boolean(restaurant.is_favorite));
+  favouriteIcon.classList.toggle('starred', JSON.parse(restaurant.is_favorite));
   favouriteIcon.addEventListener('click', () => {
     let isFavourite;
 
     // Checks if restaurant is already starred
     if (favouriteIcon.classList.contains('starred')) {
-      favouriteIcon.classList.remove('starred');
       isFavourite = false;
 
     } else {
-      favouriteIcon.classList.add('starred');
       isFavourite = true;
     }
 
-    DBHelper.updateFavoriteRestaurants(restaurant, isFavourite);
+    DBHelper.updateFavoriteRestaurants(restaurant, isFavourite, (error, restaurant) => {
+      if (error) {
+        console.error(error);
+      } else {
+        favouriteIcon.classList.toggle('starred', isFavourite);
+      }
+    });
   });
 
   const address = document.getElementById('restaurant-address');
