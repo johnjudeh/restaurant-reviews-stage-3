@@ -73,6 +73,9 @@ export default class DBHelper {
    /**
     * Update favorite restaurants in database.
     */
+    // TODO: Add callback to this so it works in the same way as other functions
+    // Currently it puts the new information in the database regardless of if the
+    // Server request is successful
    static updateFavoriteRestaurants(restaurant, isFavourite) {
      // Updates server database with new is_favorite value
      fetch(DBHelper.getSpecificRestaurantUrl(restaurant.id) + '?is_favorite=' + isFavourite, {
