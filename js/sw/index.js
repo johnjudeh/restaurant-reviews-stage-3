@@ -77,4 +77,15 @@ export default class ServiceWorker {
       worker.postMessage({action: 'skipWaiting'});
     })
   }
+
+  createBackgroundSync(outboxKey) {
+    // Exits if browser does not support service worker or background sync
+    if (!navigator.serviceWorker || !window.SyncManager) return;
+
+    return navigator.serviceWorker.ready.then(reg => {
+      return reg.sync.register(outboxKey);
+    });
+
+  }
+
 }

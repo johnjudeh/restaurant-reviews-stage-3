@@ -13,11 +13,19 @@ export default class OfflineController {
   constructor() {
     // Creates new ServiceWorker on instantiation
     // TODO: turn me back on after development!
-    // this._serviceWorker = new ServiceWorker();
+    this._serviceWorker = new ServiceWorker();
     // Creates / opens idb database
     this.IDB_DATABASE_NAME = 'restaurants-app';
     this._dbPromise = this._openDatabase();
   }
+
+  // =========== ServiceWorker Functionality ===========
+
+  createBackgroundSync(outboxKey) {
+    return this._serviceWorker.createBackgroundSync(outboxKey);
+  }
+
+  // =========== Database Functionality ===========
 
   // Opens the idb database and returns the promise
   _openDatabase() {
@@ -39,6 +47,7 @@ export default class OfflineController {
         // Runs when browser has version 1
         case 1:
           const reviewsStore = upgradeDB.createObjectStore('reviews');
+          const reviewsOutboxStore = upgradeDB.createObjectStore('reviews-outbox');
       }
 
     });
@@ -186,6 +195,26 @@ export default class OfflineController {
       // Returns promise of transaction
       return tx.complete;
 
+    })
+  }
+
+  // =========== Reviews-Outbox Store Functionality ===========
+
+  // Places review in reviews-outbox waiting for connectivity
+  storeInReviewsOutboxDB(key, review) {
+    return this._dbPromise.then(db => {
+      // Leaves function if there is no database
+      if (!db) return;
+
+      // Creates a new transaction
+      const tx = db.transaction('reviews-outbox', 'readwrite');
+      const store = tx.objectStore('reviews-outbox');
+
+      // Places review in review-outbox
+      store.put(review, key);
+
+      // Returns promise of transaction
+      return tx.complete;
     })
   }
 

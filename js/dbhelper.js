@@ -95,8 +95,8 @@ export default class DBHelper {
        callback(null, restaurantResponse);
      })
      .catch(error => {
-       // console.log(error);
-       // callback(error, null);
+       console.log(error);
+       callback(error, null);
      });
 
    }
@@ -106,25 +106,48 @@ export default class DBHelper {
     */
    static addNewReview(restaurant, requestBody, callback) {
      // Updates server database with new is_favorite value
-     fetch(DBHelper.REVIEWS_URL, {
-       method: 'POST',
-       body: JSON.stringify(requestBody)
-     }).then(response => {
-       if (response.status === 201) { // Got a success response from the server!
-         return response.json();
-       } else { // Oops!. Got an error from server.
-         const error = (`Request failed. Returned status of ${response.status}`);
-         throw error;
-       }
-     })
-     .then(review => {
-       // Updates IDB database with new review
-       offlineController.updateReviewsDBRecord(restaurant.id, review);
-       callback(null, review);
-     })
-     .catch(error => {
-       callback(error, null);
-     });
+     const reviewKey = DBHelper.generateRandomKey('rev');
+
+     offlineController.storeInReviewsOutboxDB(reviewKey, requestBody)
+      .then(() => {
+        // Add prelimenary creation time for display
+        // and outbox key to retrieve it later and update with server response
+        const now = new Date();
+        requestBody['outboxKey'] = reviewKey;
+        requestBody['updatedAt'] = now.toLocaleString();
+        // Add to idb for next page load to show data
+        return offlineController.updateReviewsDBRecord(restaurant.id, requestBody);
+      })
+      .then(() => {
+        // Adds background-sync event with servic worker
+        callback(null, requestBody);
+        return offlineController.createBackgroundSync(reviewKey);
+      })
+      .catch(error => {
+        callback(error, null);
+      });
+
+     //
+     //
+     // fetch(DBHelper.REVIEWS_URL, {
+     //   method: 'POST',
+     //   body: JSON.stringify(requestBody)
+     // }).then(response => {
+     //   if (response.status === 201) { // Got a success response from the server!
+     //     return response.json();
+     //   } else { // Oops!. Got an error from server.
+     //     const error = (`Request failed. Returned status of ${response.status}`);
+     //     throw error;
+     //   }
+     // })
+     // .then(review => {
+     //   // Updates IDB database with new review
+     //   offlineController.updateReviewsDBRecord(restaurant.id, review);
+     //   callback(null, review);
+     // })
+     // .catch(error => {
+     //   callback(error, null);
+     // });
 
    }
 
@@ -390,6 +413,13 @@ export default class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  /**
+   * Generates random number given prefix
+   */
+  static generateRandomKey(prefix) {
+    return prefix + '_' + Math.random().toString(36).substr(2, 9);
   }
 
 }

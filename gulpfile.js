@@ -16,7 +16,7 @@ const csso = require('gulp-csso');
  * Default task - runs with gulp command in command line
  */
 gulp.task('default', ['copy-html', 'copy-images', 'copy-icons', 'copy-manifest',
-  'copy-sw', 'styles', 'main-bundle', 'restaurant-bundle'], () => {
+  'sw', 'styles', 'main-bundle', 'restaurant-bundle'], () => {
 
   // Watches files and reruns tasks if any change
   gulp.watch('css/*.css', ['styles'])
@@ -27,7 +27,7 @@ gulp.task('default', ['copy-html', 'copy-images', 'copy-icons', 'copy-manifest',
     .on('change', browserSync.reload);
   gulp.watch('./manifest.json', ['copy-manifest'])
     .on('change', browserSync.reload);
-  gulp.watch('./sw.js', ['copy-sw'])
+  gulp.watch('./sw-src.js', ['sw'])
     .on('change', browserSync.reload);
 
   // Creates server from build directory
@@ -49,7 +49,7 @@ gulp.task('default', ['copy-html', 'copy-images', 'copy-icons', 'copy-manifest',
      .on('change', browserSync.reload);
    gulp.watch('./manifest.json', ['copy-manifest'])
      .on('change', browserSync.reload);
-   gulp.watch('./sw.js', ['copy-sw'])
+   gulp.watch('./sw-src.js', ['sw'])
      .on('change', browserSync.reload);
 
    // Creates server from build directory
@@ -66,7 +66,7 @@ gulp.task('build', [
   'copy-images',
   'copy-icons',
   'copy-manifest',
-  'copy-sw',
+  'sw',
   'styles-prod',
   'scripts-prod'
 ]);
@@ -120,13 +120,24 @@ gulp.task('copy-manifest', () => {
 });
 
 /**
- * Copy serviceWorker into the build folder
+ * Bundles & babelifies sw-src.js.
  */
-gulp.task('copy-sw', () => {
-  return gulp.src('./sw.js')
-    .pipe(babel({
-      presets: ['env']
-    }))
+gulp.task('sw-bundle', () => {
+  return browserify('./sw-src.js')
+    // Runs ES6 code through babel before bundling
+    .transform(babelify, {presets: ["env"]})
+    .bundle()
+    // Coverts the bundle into a type of stream node is expectings
+    .pipe(source('sw.js'))
+    .pipe(gulp.dest('./build'))
+    .pipe(browserSync.stream());
+});
+
+/**
+ * Minifies sw.js after bundling.
+ */
+gulp.task('sw', ['sw-bundle'], () => {
+  return gulp.src('./build/sw.js')
     .pipe(uglify())
     .pipe(gulp.dest('./build'))
     .pipe(browserSync.stream());
