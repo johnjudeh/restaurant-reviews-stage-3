@@ -97,26 +97,23 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
   name.innerHTML = restaurant.name;
 
   const favouriteIcon = document.querySelector('.restaurant__fav-restaurant');
-  favouriteIcon.classList.toggle('starred', JSON.parse(restaurant.is_favorite));
-  favouriteIcon.addEventListener('click', () => {
-    let isFavourite;
-
-    // Checks if restaurant is already starred
-    if (favouriteIcon.classList.contains('starred')) {
-      isFavourite = false;
-
-    } else {
-      isFavourite = true;
-    }
-
-    DBHelper.updateFavoriteRestaurants(restaurant, isFavourite, (error, restaurant) => {
-      if (error) {
-        console.error(error);
-      } else {
-        favouriteIcon.classList.toggle('starred', isFavourite);
-      }
-    });
+  const favChecked = JSON.parse(restaurant.is_favorite);
+  favouriteIcon.setAttribute('aria-pressed', favChecked);
+  favouriteIcon.classList.toggle('starred', favChecked);
+  favouriteIcon.addEventListener('click', function() {
+    toggleFavouriteRestaurant(this, restaurant);
   });
+  favouriteIcon.addEventListener('keydown', function(event) {
+    // Define values for keycodes
+    const VK_ENTER = 13;
+    const VK_SPACE = 32;
+
+    if (event.keyCode === VK_ENTER || event.keyCode === VK_SPACE) {
+      event.preventDefault();
+      toggleFavouriteRestaurant(this, restaurant);
+    }
+  });
+
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -142,6 +139,30 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
       fillReviewsHTML();
     }
   })
+}
+
+/**
+ * Updates is_favorite in databases and toggles starred class
+ */
+function toggleFavouriteRestaurant(favouriteIcon, restaurant) {
+  let isFavourite;
+
+  // Checks if restaurant is already starred
+  if (favouriteIcon.classList.contains('starred')) {
+    isFavourite = false;
+
+  } else {
+    isFavourite = true;
+  }
+
+  DBHelper.updateFavoriteRestaurants(restaurant, isFavourite, (error, restaurant) => {
+    if (error) {
+      console.error(error);
+    } else {
+      favouriteIcon.setAttribute('aria-pressed', isFavourite);
+      favouriteIcon.classList.toggle('starred', isFavourite);
+    }
+  });
 }
 
 /**

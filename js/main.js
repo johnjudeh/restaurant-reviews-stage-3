@@ -179,28 +179,27 @@ function createRestaurantHTML(restaurant) {
   li.className = 'restaurants-list__card';
 
   const favouriteIcon = document.createElement('i');
+  const favChecked = JSON.parse(restaurant.is_favorite);
   favouriteIcon.tabIndex = '0';
+  favouriteIcon.setAttribute('role', 'button');
+  favouriteIcon.setAttribute('aria-label', 'favourite restaurant');
+  favouriteIcon.setAttribute('aria-pressed', favChecked);
   favouriteIcon.className = 'far fa-star restaurants-list__card__fav-restaurant';
-  favouriteIcon.classList.toggle('starred', JSON.parse(restaurant.is_favorite));
-  favouriteIcon.addEventListener('click', () => {
-    let isFavourite;
+  favouriteIcon.classList.toggle('starred', favChecked);
+  // Adds event listener for clicks
+  favouriteIcon.addEventListener('click', function() {
+    toggleFavouriteRestaurant(this, restaurant);
+  });
+  // Adds event listener for pressing enter or space on the keyboard - a11y
+  favouriteIcon.addEventListener('keydown', function(event) {
+    // Define values for keycodes
+    const VK_ENTER = 13;
+    const VK_SPACE = 32;
 
-    // Checks if restaurant is already starred
-    if (favouriteIcon.classList.contains('starred')) {
-      isFavourite = false;
-
-    } else {
-      isFavourite = true;
+    if (event.keyCode === VK_ENTER || event.keyCode === VK_SPACE) {
+      event.preventDefault();
+      toggleFavouriteRestaurant(this, restaurant);
     }
-
-    DBHelper.updateFavoriteRestaurants(restaurant, isFavourite, (error, restaurant) => {
-      if (error) {
-        console.error(error);
-      } else {
-        favouriteIcon.classList.toggle('starred', isFavourite);
-      }
-    });
-
   });
   li.append(favouriteIcon);
 
@@ -234,6 +233,30 @@ function createRestaurantHTML(restaurant) {
   li.append(more);
 
   return li;
+}
+
+/**
+ * Updates is_favorite in databases and toggles starred class
+ */
+function toggleFavouriteRestaurant(favouriteIcon, restaurant) {
+  let isFavourite;
+
+  // Checks if restaurant is already starred
+  if (favouriteIcon.classList.contains('starred')) {
+    isFavourite = false;
+
+  } else {
+    isFavourite = true;
+  }
+
+  DBHelper.updateFavoriteRestaurants(restaurant, isFavourite, (error, restaurant) => {
+    if (error) {
+      console.error(error);
+    } else {
+      favouriteIcon.setAttribute('aria-pressed', isFavourite);
+      favouriteIcon.classList.toggle('starred', isFavourite);
+    }
+  });
 }
 
 /**
