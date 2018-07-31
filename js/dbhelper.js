@@ -114,7 +114,7 @@ export default class DBHelper {
         // and outbox key to retrieve it later and update with server response
         const now = new Date();
         requestBody['outboxKey'] = reviewKey;
-        requestBody['updatedAt'] = now.toLocaleString();
+        requestBody['updatedAt'] = now.getTime();
         // Add to idb for next page load to show data
         return offlineController.updateReviewsDBRecord(restaurant.id, requestBody);
       })

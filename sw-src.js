@@ -85,30 +85,125 @@ self.addEventListener('sync', event => {
 function sendRequestInOutbox(outboxTag) {
   const dbPromise = idb.open(IDB_DATABASE_NAME, 2);
 
+  return getFromDatabase(dbPromise, 'reviews-outbox', outboxTag)
+    .then(requestBody => {
+    console.log(requestBody);
+
+    // Send request and ensure response
+    return fetch(REVIEWS_URL, {
+      method: 'POST',
+      body: JSON.stringify(requestBody)
+    });
+
+  }).then(response => {
+    if (response.status === 201) { // Got a success response from the server!
+      return response.json();
+    } else { // Oops!. Got an error from server.
+      const error = (`Request failed. Returned status of ${response.status}`);
+      throw error;
+    }
+
+  }).then(review => { // Updates IDB database with new review
+    const restaurantId = Number(review.restaurant_id);
+    return getFromDatabase(dbPromise, 'reviews', restaurantId)
+      .then(storeReviews => {
+        console.log('Before update:', storeReviews);
+
+        storeReviews = storeReviews.map(storeReview => {
+          if (storeReview.hasOwnProperty('outboxKey') && storeReview['outboxKey'] === outboxTag) {
+            return review;
+          } else {
+            return storeReview;
+          }
+        });
+
+        console.log('After update:', storeReviews);
+
+        const restaurantId = Number(review.restaurant_id);
+        return putInDatabase(dbPromise, 'reviews', storeReviews, restaurantId);
+      });
+
+  }).then(() => {
+    return deleteFromDatabase(dbPromise, 'reviews-outbox', outboxTag);
+
+  }).catch(error => {
+    console.error(error);
+
+  });
+
+}
+
+// Gets value from given database store
+function getFromDatabase(dbPromise, storeName, key) {
+
   return dbPromise.then(db => {
     // Leaves function if there is no database
     if (!db) return;
 
-    console.log('opened database');
+    console.log(`Opened ${storeName} store`);
 
     // Creates a new transaction
-    const tx = db.transaction('reviews-outbox', 'readwrite');
-    const store = tx.objectStore('reviews-outbox');
+    const tx = db.transaction(storeName);
+    const store = tx.objectStore(storeName);
 
     // Retrieve outbox item
-    return store.get(outboxTag);
+    return store.get(key);
 
-  }).then(requestBody => {
+  });
 
-    console.log(requestBody);
+}
 
-    // Code leads up to here --> next steps below
-      // 1. send request and ensure response
-      // 2. update idb with review
-      // 3. delete review from idb outbox
+// Puts value in given database store
+function putInDatabase(dbPromise, storeName, value, key = null) {
 
-      
+  return dbPromise.then(db => {
+    // Leaves function if there is no database
+    if (!db) return;
 
+    console.log(`Opened ${storeName} store`);
+
+    // Creates a new transaction
+    const tx = db.transaction(storeName, 'readwrite');
+    const store = tx.objectStore(storeName);
+
+    // Retrieve outbox item
+    if (key) {
+      store.put(value, key);
+    } else {
+      store.put(value);
+    }
+
+    return tx.complete;
+
+  });
+
+}
+
+// Deletes value from given database store
+function deleteFromDatabase(dbPromise, storeName, key) {
+
+  return dbPromise.then(db => {
+    // Leaves function if there is no database
+    if (!db) return;
+
+    console.log(`Opened ${storeName} store`);
+
+    // Creates a new transaction
+    const tx = db.transaction(storeName, 'readwrite');
+    const store = tx.objectStore(storeName);
+
+    // Retrieve outbox item
+    return store.delete(key);
+
+  });
+
+}
+
+    // 2. update idb with review
+    // 3. delete review from idb outbox
+    //
+    //
+    //
     // fetch(REVIEWS_URL, {
     //   method: 'POST',
     //   body: JSON.stringify(requestBody)
@@ -128,9 +223,7 @@ function sendRequestInOutbox(outboxTag) {
     // .catch(error => {
     //   callback(error, null);
     // });
+    //
 
 
-
-  })
-
-}
+  // })
