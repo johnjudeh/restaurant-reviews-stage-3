@@ -290,6 +290,7 @@ function fillBreadcrumb(restaurant=self.restaurant) {
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   li.className = 'breadcrumb__item';
+  li.setAttribute('aria-current', 'page');
   breadcrumb.appendChild(li);
 }
 
