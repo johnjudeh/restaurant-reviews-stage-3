@@ -179,6 +179,7 @@ function createRestaurantHTML(restaurant) {
   li.className = 'restaurants-list__card';
 
   const favouriteIcon = document.createElement('i');
+  favouriteIcon.tabIndex = '0';
   favouriteIcon.className = 'far fa-star restaurants-list__card__fav-restaurant';
   favouriteIcon.classList.toggle('starred', JSON.parse(restaurant.is_favorite));
   favouriteIcon.addEventListener('click', () => {
