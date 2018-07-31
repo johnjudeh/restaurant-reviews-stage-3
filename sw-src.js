@@ -9,7 +9,9 @@ const IDB_DATABASE_NAME = 'restaurants-app';
 const PORT = 1337;
 const REVIEWS_URL = `http://localhost:${PORT}/reviews`;
 
-// Event fires when service worker is first discovered
+/**
+ * Event fires when service worker is first discovered.
+ */
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
@@ -25,7 +27,9 @@ self.addEventListener('install', event => {
   );
 });
 
-// Event fires when new sw is intalled and ready to take over page
+/**
+ * Event fires when new sw is intalled and ready to take over page.
+ */
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -39,7 +43,9 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Handles how a page makes fetch requests
+/**
+ * Handles how a page makes fetch requests.
+ */
 self.addEventListener('fetch', event => {
   const request = event.request;
   const requestUrl = new URL(request.url);
@@ -68,64 +74,91 @@ self.addEventListener('fetch', event => {
   }
 });
 
-// Awaits message to update service worker
+/**
+ * Awaits message to update service worker.
+ */
 self.addEventListener('message', event => {
   if (event.data.action === 'skipWaiting') {
     self.skipWaiting();
   }
 });
 
-// Awaits sync event to perform background sync
+/**
+ * Awaits sync event to perform background sync.
+ */
 self.addEventListener('sync', event => {
-  if (event.tag === event.tag) {
-    event.waitUntil(sendRequestInOutbox(event.tag));
-  }
+  // Checks which outbox the request is in
+  const tagPrefix = event.tag.split('_')[0];
+  // Calls the handler for sending messages once connectivity is established
+  event.waitUntil(sendRequestInOutbox(tagPrefix, event.tag));
 })
 
-function sendRequestInOutbox(outboxTag) {
+/**
+ * Sends requests stored in idb outbox and deletes outbox value.
+ */
+function sendRequestInOutbox(prefix, outboxTag) {
+  // Opens database and saves promise
+  const outboxStoreName = (prefix === 'rev') ? 'reviews-outbox' : 'fav-rest-outbox';
+  const updateStoreName = (prefix === 'rev') ? 'reviews' : 'restaurants';
   const dbPromise = idb.open(IDB_DATABASE_NAME, 2);
 
-  return getFromDatabase(dbPromise, 'reviews-outbox', outboxTag)
-    .then(requestBody => {
-    console.log(requestBody);
+  // Gets outbox data from idb database and sends the request
+  return getFromDatabase(dbPromise, outboxStoreName, outboxTag)
+    .then(dbData => {
 
     // Send request and ensure response
-    return fetch(REVIEWS_URL, {
-      method: 'POST',
-      body: JSON.stringify(requestBody)
-    });
+    if (prefix === 'rev') {
+      return fetch(REVIEWS_URL, {
+        method: 'POST',
+        body: JSON.stringify(dbData)
+      });
+    } else {
+      const isFavUpdateURL = `http://localhost:${PORT}/restaurants/${dbData.id}?is_favorite=${dbData.is_favorite}`;
+      return fetch(isFavUpdateURL, {
+        method: 'PUT'
+      });
+    }
 
+  // Converts response to json if successful or throws an error
   }).then(response => {
-    if (response.status === 201) { // Got a success response from the server!
+    if (response.status === 201 || response.status === 200) { // Got a success response from the server!
       return response.json();
     } else { // Oops!. Got an error from server.
       const error = (`Request failed. Returned status of ${response.status}`);
       throw error;
     }
 
-  }).then(review => { // Updates IDB database with new review
-    const restaurantId = Number(review.restaurant_id);
-    return getFromDatabase(dbPromise, 'reviews', restaurantId)
-      .then(storeReviews => {
-        console.log('Before update:', storeReviews);
+  // Updates the IDB db with the response from the server
+  }).then(responseData => { // Updates IDB database with new review
+    const restaurantId = Number(responseData.restaurant_id);
 
-        storeReviews = storeReviews.map(storeReview => {
-          if (storeReview.hasOwnProperty('outboxKey') && storeReview['outboxKey'] === outboxTag) {
-            return review;
-          } else {
-            return storeReview;
-          }
+    if (prefix === 'rev') {
+      // Gets the restaurant reviews from the database and updates the relevant review
+      return getFromDatabase(dbPromise, updateStoreName, restaurantId)
+        .then(storeReviews => {
+
+          // Loops through stored reviews and updates the review that was in the outbox
+          storeReviews = storeReviews.map(storeReview => {
+            if (storeReview.hasOwnProperty('outboxKey') && storeReview['outboxKey'] === outboxTag) {
+              return responseData;
+            } else {
+              return storeReview;
+            }
+          });
+
+          return putInDatabase(dbPromise, updateStoreName, storeReviews, restaurantId);
         });
 
-        console.log('After update:', storeReviews);
+    } else {
+      // Simply puts the new record into the database
+      return putInDatabase(dbPromise, updateStoreName, responseData);
+    }
 
-        const restaurantId = Number(review.restaurant_id);
-        return putInDatabase(dbPromise, 'reviews', storeReviews, restaurantId);
-      });
-
+  // Deletes any completed requests from the outbox
   }).then(() => {
-    return deleteFromDatabase(dbPromise, 'reviews-outbox', outboxTag);
+    return deleteFromDatabase(dbPromise, outboxStoreName, outboxTag);
 
+  // Handles any error thrown through process
   }).catch(error => {
     console.error(error);
 
@@ -133,34 +166,34 @@ function sendRequestInOutbox(outboxTag) {
 
 }
 
-// Gets value from given database store
+/**
+ * Gets value from given database store.
+ */
 function getFromDatabase(dbPromise, storeName, key) {
 
   return dbPromise.then(db => {
     // Leaves function if there is no database
     if (!db) return;
 
-    console.log(`Opened ${storeName} store`);
-
     // Creates a new transaction
     const tx = db.transaction(storeName);
     const store = tx.objectStore(storeName);
 
-    // Retrieve outbox item
+    // Retrieve outbox item and return
     return store.get(key);
 
   });
 
 }
 
-// Puts value in given database store
+/**
+ * Puts value in given database store.
+ */
 function putInDatabase(dbPromise, storeName, value, key = null) {
 
   return dbPromise.then(db => {
     // Leaves function if there is no database
     if (!db) return;
-
-    console.log(`Opened ${storeName} store`);
 
     // Creates a new transaction
     const tx = db.transaction(storeName, 'readwrite');
@@ -173,20 +206,21 @@ function putInDatabase(dbPromise, storeName, value, key = null) {
       store.put(value);
     }
 
+    // Returns a resolved promise
     return tx.complete;
 
   });
 
 }
 
-// Deletes value from given database store
+/**
+ * Deletes value from given database store.
+ */
 function deleteFromDatabase(dbPromise, storeName, key) {
 
   return dbPromise.then(db => {
     // Leaves function if there is no database
     if (!db) return;
-
-    console.log(`Opened ${storeName} store`);
 
     // Creates a new transaction
     const tx = db.transaction(storeName, 'readwrite');
@@ -198,32 +232,3 @@ function deleteFromDatabase(dbPromise, storeName, key) {
   });
 
 }
-
-    // 2. update idb with review
-    // 3. delete review from idb outbox
-    //
-    //
-    //
-    // fetch(REVIEWS_URL, {
-    //   method: 'POST',
-    //   body: JSON.stringify(requestBody)
-    // }).then(response => {
-    //   if (response.status === 201) { // Got a success response from the server!
-    //     return response.json();
-    //   } else { // Oops!. Got an error from server.
-    //     const error = (`Request failed. Returned status of ${response.status}`);
-    //     throw error;
-    //   }
-    // })
-    // .then(review => {
-    //   // Updates IDB database with new review
-    //   offlineController.updateReviewsDBRecord(restaurant.id, review);
-    //   callback(null, review);
-    // })
-    // .catch(error => {
-    //   callback(error, null);
-    // });
-    //
-
-
-  // })

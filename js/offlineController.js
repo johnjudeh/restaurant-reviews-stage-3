@@ -48,6 +48,7 @@ export default class OfflineController {
         case 1:
           const reviewsStore = upgradeDB.createObjectStore('reviews');
           const reviewsOutboxStore = upgradeDB.createObjectStore('reviews-outbox');
+          const favRestaurantOutboxStore = upgradeDB.createObjectStore('fav-rest-outbox');
       }
 
     });
@@ -201,17 +202,17 @@ export default class OfflineController {
   // =========== Reviews-Outbox Store Functionality ===========
 
   // Places review in reviews-outbox waiting for connectivity
-  storeInReviewsOutboxDB(key, review) {
+  storeInOutboxDB(storeName, key, value) {
     return this._dbPromise.then(db => {
       // Leaves function if there is no database
       if (!db) return;
 
       // Creates a new transaction
-      const tx = db.transaction('reviews-outbox', 'readwrite');
-      const store = tx.objectStore('reviews-outbox');
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
 
       // Places review in review-outbox
-      store.put(review, key);
+      store.put(value, key);
 
       // Returns promise of transaction
       return tx.complete;

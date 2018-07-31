@@ -73,31 +73,26 @@ export default class DBHelper {
    /**
     * Update favorite restaurants in database.
     */
-    // TODO: Add callback to this so it works in the same way as other functions
-    // Currently it puts the new information in the database regardless of if the
-    // Server request is successful
    static updateFavoriteRestaurants(restaurant, isFavourite, callback) {
      // Updates server database with new is_favorite value
-     fetch(DBHelper.getSpecificRestaurantUrl(restaurant.id) + '?is_favorite=' + isFavourite, {
-       method: 'PUT'
-     }).then(response => {
-       if (response.status === 200) { // Got a success response from the server!
-         return response.json();
-       } else { // Oops!. Got an error from server.
-         const error = (`Request failed. Returned status of ${response.status}`);
-         throw error;
-       }
-     })
-     .then(restaurantResponse => {
-       // Updates IDB database with updated restaurant (with new is_fav value)
-       offlineController.storeInRestaurantDB(restaurantResponse);
-       // offlineController.updateRestaurantDBRecord(restaurant.id, 'is_favorite', isFavourite);
-       callback(null, restaurantResponse);
-     })
-     .catch(error => {
-       console.log(error);
-       callback(error, null);
-     });
+     const favRestaurantKey = DBHelper.generateRandomKey('fav');
+     // Add prelimenary change of is_favorite property for user display
+     restaurant.is_favorite = isFavourite;
+
+     offlineController.storeInOutboxDB('fav-rest-outbox', favRestaurantKey, restaurant)
+      .then(() => {
+
+        // Updates IDB database with updated restaurant (with new is_fav value)
+        return offlineController.storeInRestaurantDB(restaurant);
+      })
+      .then(() => {
+        // Adds background-sync event with servic worker
+        callback(null, restaurant);
+        return offlineController.createBackgroundSync(favRestaurantKey);
+      })
+      .catch(error => {
+        callback(error, null);
+      });
 
    }
 
@@ -105,10 +100,10 @@ export default class DBHelper {
     * Update reviews in database with new review.
     */
    static addNewReview(restaurant, requestBody, callback) {
-     // Updates server database with new is_favorite value
+     // Updates server database with new review
      const reviewKey = DBHelper.generateRandomKey('rev');
 
-     offlineController.storeInReviewsOutboxDB(reviewKey, requestBody)
+     offlineController.storeInOutboxDB('reviews-outbox', reviewKey, requestBody)
       .then(() => {
         // Add prelimenary creation time for display
         // and outbox key to retrieve it later and update with server response
@@ -126,28 +121,6 @@ export default class DBHelper {
       .catch(error => {
         callback(error, null);
       });
-
-     //
-     //
-     // fetch(DBHelper.REVIEWS_URL, {
-     //   method: 'POST',
-     //   body: JSON.stringify(requestBody)
-     // }).then(response => {
-     //   if (response.status === 201) { // Got a success response from the server!
-     //     return response.json();
-     //   } else { // Oops!. Got an error from server.
-     //     const error = (`Request failed. Returned status of ${response.status}`);
-     //     throw error;
-     //   }
-     // })
-     // .then(review => {
-     //   // Updates IDB database with new review
-     //   offlineController.updateReviewsDBRecord(restaurant.id, review);
-     //   callback(null, review);
-     // })
-     // .catch(error => {
-     //   callback(error, null);
-     // });
 
    }
 

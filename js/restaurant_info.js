@@ -222,7 +222,8 @@ function sendNewReviewToDB(event) {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      // Add review to reviews list
+      // Reset form and add review to reviews list
+      form.reset();
       const ul = document.getElementById('reviews-list');
       ul.appendChild(createReviewHTML(review));
     }
