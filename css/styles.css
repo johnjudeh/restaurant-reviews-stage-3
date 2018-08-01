@@ -458,6 +458,12 @@ nav {
 	border: none;
 }
 
+.reviews-form__submit:focus {
+	background: #e91e63;
+	color: #fff;
+	text-decoration: underline;
+}
+
 .form-reviews-seperator {
 	border: 0.5px solid #caced1;
 	background-color: #caced1;
