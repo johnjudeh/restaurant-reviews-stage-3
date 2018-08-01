@@ -13,7 +13,7 @@ export default class OfflineController {
   constructor() {
     // Creates new ServiceWorker on instantiation
     // TODO: turn me back on after development!
-    this._serviceWorker = new ServiceWorker();
+    // this._serviceWorker = new ServiceWorker();
     // Creates / opens idb database
     this.IDB_DATABASE_NAME = 'restaurants-app';
     this._dbPromise = this._openDatabase();
