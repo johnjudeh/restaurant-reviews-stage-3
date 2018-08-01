@@ -257,8 +257,10 @@ function sendNewReviewToDB(event) {
  */
 function createReviewHTML(review) {
   const li = document.createElement('li');
-  const name = document.createElement('p');
+  const name = document.createElement('h4');
   li.className = 'reviews-list__review';
+  li.setAttribute('role', 'article');
+  li.setAttribute('aria-label', 'review');
   name.innerHTML = review.name;
   name.className = 'reviews-list__review__name';
   li.appendChild(name);
