@@ -16,22 +16,22 @@ module.exports = function(grunt) {
           sizes: [{
             name: 'small',
             width: 330,
-            quality: 50
+            quality: 40
           },
           {
             name: 'small-medium',
             width: 660,
-            quality: 50
+            quality: 40
           },
           {
             name: 'medium',
             width: 740,
-            quality: 50
+            quality: 40
           },
           {
             name: 'large',
             width: 1480,
-            quality: 50
+            quality: 40
           }]
         },
 

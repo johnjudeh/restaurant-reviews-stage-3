@@ -7,6 +7,9 @@ import DBHelper from './dbhelper';
 /**
  * Define variables used by the map
  */
+const TWO_RESTAURANT_VW = 808;
+const THREE_RESTAURANT_VW = 1177;
+const viewportWidth = document.documentElement.clientWidth;
 let restaurants,
     neighborhoods,
     cuisines,
@@ -119,7 +122,7 @@ function mapAssistiveStrategy() {
   // Removes tabindex from mapDiv created by Google Maps
   setTimeout(() => {
     mapDiv.setAttribute('tabindex', '-1');
-  }, 1000);
+  }, 20);
 }
 
 /**
@@ -140,7 +143,15 @@ function updateRestaurants() {
       console.error(error);
     } else {
       resetRestaurants(restaurants);
-      fillRestaurantsHTML();
+
+      // Initially loads number of restaurants based on viewport width
+      if (viewportWidth < TWO_RESTAURANT_VW) {
+        fillRestaurantsHTML(1, 1);
+      } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
+        fillRestaurantsHTML(1, 2);
+      } else {
+        fillRestaurantsHTML(1, 3);
+      }
     }
   })
 }
@@ -161,13 +172,17 @@ function resetRestaurants(restaurants) {
 }
 
 /**
- * Create all restaurants HTML and add them to the webpage.
+ * Create HTML for specified number of restaurants and add them to the webpage.
  */
-function fillRestaurantsHTML(restaurants = self.restaurants) {
+function fillRestaurantsHTML(startRestaurant = 1, endRestaurant = 10, restaurants = self.restaurants) {
   const ul = document.getElementById('restaurants-list');
-  restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
-  });
+  let restaurantCount = 0;
+
+  // Adds restaurants to page based on parameters passed
+  for (let i = startRestaurant - 1; i < endRestaurant; i++) {
+    ul.append(createRestaurantHTML(restaurants[i]));
+  }
+
   addMarkersToMap();
 }
 
