@@ -25,6 +25,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 /**
+ * Load all other restaurants when user scrolls.
+ */
+window.addEventListener('scroll', lazyLoadRestaurants, { once: true });
+
+/**
+ * Lazy loads any restaurants that were not loaded initially.
+ */
+function lazyLoadRestaurants() {
+  if (viewportWidth < TWO_RESTAURANT_VW) {
+    fillRestaurantsHTML(false, 1);
+  } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
+    fillRestaurantsHTML(false, 2);
+  } else {
+    fillRestaurantsHTML(false, 3);
+  }
+}
+
+/**
  * Fetch all neighborhoods and set their HTML.
  */
 function fetchNeighborhoods() {
@@ -146,11 +164,11 @@ function updateRestaurants() {
 
       // Initially loads number of restaurants based on viewport width
       if (viewportWidth < TWO_RESTAURANT_VW) {
-        fillRestaurantsHTML(1, 1);
+        fillRestaurantsHTML(true, 1, 1);
       } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
-        fillRestaurantsHTML(1, 2);
+        fillRestaurantsHTML(true, 1, 2);
       } else {
-        fillRestaurantsHTML(1, 3);
+        fillRestaurantsHTML(true, 1, 3);
       }
     }
   })
@@ -174,16 +192,18 @@ function resetRestaurants(restaurants) {
 /**
  * Create HTML for specified number of restaurants and add them to the webpage.
  */
-function fillRestaurantsHTML(startRestaurant = 1, endRestaurant = 10, restaurants = self.restaurants) {
+function fillRestaurantsHTML(addMarkers = true, startRest = 1, endRest = 10, restaurants = self.restaurants) {
   const ul = document.getElementById('restaurants-list');
   let restaurantCount = 0;
 
   // Adds restaurants to page based on parameters passed
-  for (let i = startRestaurant - 1; i < endRestaurant; i++) {
+  for (let i = startRest - 1; i < endRest; i++) {
     ul.append(createRestaurantHTML(restaurants[i]));
   }
 
-  addMarkersToMap();
+  // Adds markers if addMarkers is true
+  if (addMarkers) addMarkersToMap();
+
 }
 
 /**
