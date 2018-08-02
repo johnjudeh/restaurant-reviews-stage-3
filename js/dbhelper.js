@@ -382,9 +382,8 @@ export default class DBHelper {
       position: restaurant.latlng,
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
+      map: map
+    });
     return marker;
   }
 
