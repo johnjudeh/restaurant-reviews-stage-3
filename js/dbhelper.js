@@ -74,7 +74,21 @@ export default class DBHelper {
     * Update favorite restaurants in database.
     */
    static updateFavoriteRestaurants(restaurant, isFavourite, callback) {
-     // Updates server database with new is_favorite value
+     // Checks if browser supports service workers and background sync
+     if (navigator.serviceWorker && window.SyncManager) {
+       console.log('we are in the backgroundSync');
+       DBHelper.updateFavoriteRestWithBackgroundSync(restaurant, isFavourite, callback);
+     } else {
+       console.log('we are in no backgroundSync mode');
+       DBHelper.updateFavoriteRestWithoutBackgroundSync(restaurant, isFavourite, callback);
+     }
+
+   }
+
+   /**
+    * Update favorite restaurants using background sync.
+    */
+   static updateFavoriteRestWithBackgroundSync(restaurant, isFavourite, callback) {
      const favRestaurantKey = DBHelper.generateRandomKey('fav');
      // Add prelimenary change of is_favorite property for user display
      restaurant.is_favorite = isFavourite;
@@ -93,6 +107,33 @@ export default class DBHelper {
       .catch(error => {
         callback(error, null);
       });
+   }
+
+   /**
+    * Update favorite restaurants without using background sync for older browser support.
+    */
+   static updateFavoriteRestWithoutBackgroundSync(restaurant, isFavourite, callback) {
+     // Updates server database with new is_favorite value
+     const isFavUpdateURL = DBHelper.getSpecificRestaurantUrl(restaurant.id) + '?is_favorite=' + isFavourite;
+     fetch(isFavUpdateURL, {
+       method: 'PUT'
+     }).then(response => {
+       if (response.status === 200) { // Got a success response from the server!
+         return response.json();
+       } else { // Oops!. Got an error from server.
+         const error = (`Request failed. Returned status of ${response.status}`);
+         throw error;
+       }
+     })
+     .then(restaurantResponse => {
+       // Updates IDB database with updated restaurant (with new is_fav value)
+       offlineController.storeInRestaurantDB(restaurantResponse);
+       callback(null, restaurantResponse);
+     })
+     .catch(error => {
+       console.log(error);
+       callback(error, null);
+     });
 
    }
 
