@@ -152,8 +152,8 @@ nav {
 
 .skip-link {
 	position: absolute;
-	top: -40px;
-	left: 0px;
+	top: 0;
+	left: -250px;
 	font-size: 1.5em;
 	background-color: white;
   height: 40px;
@@ -165,11 +165,7 @@ nav {
 }
 
 .skip-link:focus {
-	top: 80px;
-}
-
-.restaurant-skip:focus {
-	top: 1140px;
+	left: 0;
 }
 
 
@@ -177,6 +173,7 @@ nav {
 
 .map-container {
 	border-top: 15px solid #0074c2;
+	position: relative;
 }
 
 .map-div {
