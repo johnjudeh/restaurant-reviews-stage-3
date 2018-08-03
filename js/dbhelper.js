@@ -141,7 +141,21 @@ export default class DBHelper {
     * Update reviews in database with new review.
     */
    static addNewReview(restaurant, requestBody, callback) {
-     // Updates server database with new review
+     // Checks if browser supports service workers and background sync
+     if (navigator.serviceWorker && window.SyncManager) {
+       console.log('we are in the backgroundSync');
+       DBHelper.addNewReviewWithBackgroundSync(restaurant, requestBody, callback);
+     } else {
+       console.log('we are in no backgroundSync mode');
+       DBHelper.addNewReviewWithoutBackgroundSync(restaurant, requestBody, callback);
+     }
+   }
+
+   /**
+    * Add new review using background sync.
+    */
+   static addNewReviewWithBackgroundSync(restaurant, requestBody, callback) {
+
      const reviewKey = DBHelper.generateRandomKey('rev');
 
      offlineController.storeInOutboxDB('reviews-outbox', reviewKey, requestBody)
@@ -162,6 +176,33 @@ export default class DBHelper {
       .catch(error => {
         callback(error, null);
       });
+
+   }
+
+   /**
+    * Add new review without using background sync for older browser compatibility.
+    */
+   static addNewReviewWithoutBackgroundSync(restaurant, requestBody, callback) {
+     // Updates server database with new is_favorite value
+     fetch(DBHelper.REVIEWS_URL, {
+       method: 'POST',
+       body: JSON.stringify(requestBody)
+     }).then(response => {
+       if (response.status === 201) { // Got a success response from the server!
+         return response.json();
+       } else { // Oops!. Got an error from server.
+         const error = (`Request failed. Returned status of ${response.status}`);
+         throw error;
+       }
+     })
+     .then(review => {
+       // Updates IDB database with new review
+       offlineController.updateReviewsDBRecord(restaurant.id, review);
+       callback(null, review);
+     })
+     .catch(error => {
+       callback(error, null);
+     });
 
    }
 
