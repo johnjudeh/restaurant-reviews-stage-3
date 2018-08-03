@@ -16,6 +16,11 @@ let restaurants,
     markers = [];
 
 /**
+ * Fill page with restaurants without adding markers onto map.
+ */
+updateRestaurants(false, true);
+
+/**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -27,19 +32,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
 /**
  * Load all other restaurants when user scrolls.
  */
-window.addEventListener('scroll', lazyLoadRestaurants, { once: true });
+window.addEventListener('scroll', lazyLoads, { once: true });
+
+/**
+ * Lazy loads restaurants and map.
+ */
+function lazyLoads() {
+ lazyLoadRestaurants();
+ lazyLoadMap();
+}
 
 /**
  * Lazy loads any restaurants that were not loaded initially.
  */
 function lazyLoadRestaurants() {
-  if (viewportWidth < TWO_RESTAURANT_VW) {
-    fillRestaurantsHTML(false, 1);
-  } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
-    fillRestaurantsHTML(false, 2);
-  } else {
-    fillRestaurantsHTML(false, 3);
-  }
+  // Count the number of loaded restaurants
+  const restaurantCount = document.querySelectorAll('.restaurants-list__card').length;
+  fillRestaurantsHTML(false, restaurantCount + 1);
+}
+
+/**
+ * Lazy loads google map and fills restaurant markers.
+ */
+function lazyLoadMap() {
+  initMap();
+  addMarkersToMap();
 }
 
 /**
@@ -105,9 +122,35 @@ function setEventsForFilters() {
   const neighborhoodFilter = document.getElementById('neighborhoods-select');
   const cuisineFilter = document.getElementById('cuisines-select');
 
-  neighborhoodFilter.addEventListener('change', updateRestaurants);
-  cuisineFilter.addEventListener('change', updateRestaurants);
+  neighborhoodFilter.addEventListener('change', filterPageUpdate);
+  cuisineFilter.addEventListener('change', filterPageUpdate);
 }
+
+/**
+ * Handles filter change events
+ */
+ function filterPageUpdate() {
+   const restaurantCount = document.querySelectorAll('.restaurants-list__card').length;
+
+   // Checks if lazy loading has already been completed
+   if (restaurantCount < self.restaurants.length) {
+     // Updates restaurants and maps
+     lazyLoadMapAndUpdateRestaurants();
+   } else {
+     updateRestaurants();
+   }
+ }
+
+ /**
+  * Lazy loads map and updates restaurants based on filter.
+  */
+ function lazyLoadMapAndUpdateRestaurants() {
+   // Count the number of loaded restaurants
+   const restaurantCount = document.querySelectorAll('.restaurants-list__card').length;
+   window.removeEventListener('scroll', lazyLoads);
+   lazyLoadMap();
+   updateRestaurants();
+ }
 
 /**
  * Initialize Google map, called from HTML.
@@ -123,7 +166,6 @@ window.initMap = () => {
     scrollwheel: false
   });
   google.maps.event.addListener(self.map, 'tilesloaded', mapAssistiveStrategy);
-  updateRestaurants();
 };
 
 /**
@@ -146,7 +188,7 @@ function mapAssistiveStrategy() {
 /**
  * Update page and map for current restaurants.
  */
-function updateRestaurants() {
+function updateRestaurants(addMarkers = true, lazy = false, startRest = 1) {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
@@ -162,14 +204,22 @@ function updateRestaurants() {
     } else {
       resetRestaurants(restaurants);
 
-      // Initially loads number of restaurants based on viewport width
-      if (viewportWidth < TWO_RESTAURANT_VW) {
-        fillRestaurantsHTML(true, 1, 1);
-      } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
-        fillRestaurantsHTML(true, 1, 2);
+      // Initially loads a number of restaurants based on viewport width
+      if (lazy) {
+
+        if (viewportWidth < TWO_RESTAURANT_VW) {
+          fillRestaurantsHTML(addMarkers, startRest, 2);
+        } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
+          fillRestaurantsHTML(addMarkers, startRest, 4);
+        } else {
+          fillRestaurantsHTML(addMarkers, startRest, 6);
+        }
+
       } else {
-        fillRestaurantsHTML(true, 1, 3);
+        // Fills all restaurants on page
+        fillRestaurantsHTML(addMarkers, startRest);
       }
+
     }
   })
 }
@@ -194,16 +244,18 @@ function resetRestaurants(restaurants) {
  */
 function fillRestaurantsHTML(addMarkers = true, startRest = 1, endRest = 10, restaurants = self.restaurants) {
   const ul = document.getElementById('restaurants-list');
-  let restaurantCount = 0;
+  let i = 1;
 
   // Adds restaurants to page based on parameters passed
-  for (let i = startRest - 1; i < endRest; i++) {
-    ul.append(createRestaurantHTML(restaurants[i]));
-  }
+  restaurants.forEach(restaurant => {
+    if (i >= startRest && i <= endRest) {
+      ul.append(createRestaurantHTML(restaurant));
+    }
+    i++;
+  })
 
   // Adds markers if addMarkers is true
   if (addMarkers) addMarkersToMap();
-
 }
 
 /**

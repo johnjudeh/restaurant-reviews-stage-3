@@ -22,12 +22,6 @@
   <a href="#filter-options" class="skip-link">Skip map to main content</a>
 
   <main id="maincontent">
-    <section id="map-container">
-      <div class="map-div" id="map" tabindex="0" role="application"
-        aria-label="Map with restaurants">
-      </div>
-    </section>
-
     <section class="filter-options" id="filter-options" tabindex="-1">
       <h2 class="filter-options__header">Filter Results</h2>
 
@@ -48,6 +42,12 @@
         aria-relevant="additions"></ul>
     </section>
 
+    <section id="map-container" class="map-container">
+      <div class="map-div" id="map" tabindex="0" role="application"
+        aria-label="Map with restaurants">
+      </div>
+    </section>
+
     <div class="sw-toast" id="toastDiv" hidden role="dialog" aria-labelledby="toastMessage"
       aria-live="polite">
       <p class="toastMessage" id="toastMessage">New version available</p>
@@ -62,7 +62,8 @@
   </footer>
 
   <script type="application/javascript" charset="utf-8" src="js/main-bundle.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL-UOm3yFm_RGo7qEX2nReEpuEy99VH3U&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL-UOm3yFm_RGo7qEX2nReEpuEy99VH3U&libraries=places"></script>
+  <!-- &callback=initMap -->
 
 </body>
 
