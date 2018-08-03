@@ -25,14 +25,7 @@
     </nav>
   </header>
 
-  <a href="#restaurant-container" class="skip-link restaurant-skip">Skip map to main content</a>
-
   <main id="maincontent">
-    <section id="map-container">
-      <div class="map-div map-reviews" id="map" tabindex="0" role="application"
-        aria-label="Restaurant map"></div>
-    </section>
-
     <section class="restaurant" id="restaurant-container" tabindex="-1">
       <h2 class="restaurant__name" id="restaurant-name"></h2>
       <div class="restaurant__image-container">
@@ -42,6 +35,13 @@
       <p class="restaurant__cuisine" id="restaurant-cuisine"></p>
       <p class="restaurant__address" id="restaurant-address"></p>
       <table class="restaurant__hours-table" id="restaurant-hours"></table>
+    </section>
+
+    <a href="#restaurant-container" class="skip-link restaurant-skip">Skip map to reviews</a>
+
+    <section id="map-container" class="map-container">
+      <div class="map-div map-reviews" id="map" tabindex="0" role="application"
+        aria-label="Restaurant map"></div>
     </section>
 
     <section class="reviews-container" id="reviews-container">

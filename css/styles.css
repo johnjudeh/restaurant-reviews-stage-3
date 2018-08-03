@@ -169,7 +169,7 @@ nav {
 }
 
 .restaurant-skip:focus {
-	top: 128px;
+	top: 1140px;
 }
 
 
@@ -186,7 +186,7 @@ nav {
 }
 
 .map-reviews {
-	border-bottom: 25px solid #0074c2;
+	border-bottom: 15px solid #0074c2;
 }
 
 
@@ -312,8 +312,7 @@ nav {
 }
 
 .restaurant {
-	padding: 25px 35px 20px;
-	border-bottom: 2px solid #caced1;
+	padding: 25px 35px 40px;
 }
 
 .restaurant__name,
@@ -401,7 +400,7 @@ nav {
 /* ============== Restaurant Details -- Reviews ============== */
 
 .reviews-container {
-	padding: 20px 35px 20px;
+	padding: 40px 35px 20px;
 }
 
 .reviews-title {
