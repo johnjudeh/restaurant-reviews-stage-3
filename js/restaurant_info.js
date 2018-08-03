@@ -9,25 +9,38 @@ import DBHelper from './dbhelper';
  */
 let restaurant;
 
+fetchRestaurantFromURL((error, restaurant) => {
+  if (error) { // Got an error!
+    console.error(error);
+  } else {
+    fillBreadcrumb();
+  }
+});
+
 /**
- * Initialize Google map, called from HTML.
+ * Scroll event that lazy loads Google maps.
  */
-window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      google.maps.event.addListener(self.map, 'tilesloaded', removeIframeFocusability);
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
+window.addEventListener('scroll', lazyLoadMap, { once: true });
+
+/**
+ * Lazy loads Google map from scroll event.
+ */
+function lazyLoadMap() {
+  initMap();
+}
+
+/**
+ * Initialize Google map.
+ */
+self.initMap = (restaurant = self.restaurant) => {
+  self.map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 16,
+    center: restaurant.latlng,
+    scrollwheel: false
   });
-};
+  google.maps.event.addListener(self.map, 'tilesloaded', removeIframeFocusability);
+  DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+}
 
 /**
  * Get current restaurant from page URL.
