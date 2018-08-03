@@ -76,10 +76,8 @@ export default class DBHelper {
    static updateFavoriteRestaurants(restaurant, isFavourite, callback) {
      // Checks if browser supports service workers and background sync
      if (navigator.serviceWorker && window.SyncManager) {
-       console.log('we are in the backgroundSync');
        DBHelper.updateFavoriteRestWithBackgroundSync(restaurant, isFavourite, callback);
      } else {
-       console.log('we are in no backgroundSync mode');
        DBHelper.updateFavoriteRestWithoutBackgroundSync(restaurant, isFavourite, callback);
      }
 
@@ -143,10 +141,8 @@ export default class DBHelper {
    static addNewReview(restaurant, requestBody, callback) {
      // Checks if browser supports service workers and background sync
      if (navigator.serviceWorker && window.SyncManager) {
-       console.log('we are in the backgroundSync');
        DBHelper.addNewReviewWithBackgroundSync(restaurant, requestBody, callback);
      } else {
-       console.log('we are in no backgroundSync mode');
        DBHelper.addNewReviewWithoutBackgroundSync(restaurant, requestBody, callback);
      }
    }
