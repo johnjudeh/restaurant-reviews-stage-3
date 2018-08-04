@@ -153,7 +153,10 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
     if (!reviews) {
       console.error(error);
     } else {
+      const reviewsList = document.getElementById('reviews-list');
+      reviewsList.setAttribute('aria-busy', 'true');
       fillReviewsHTML();
+      reviewsList.setAttribute('aria-busy', 'false');
     }
   })
 }

@@ -16,9 +16,20 @@ let restaurants,
     markers = [];
 
 /**
+ * Run at page load.
+ */
+loadRestaurants();
+
+/**
  * Fill page with restaurants without adding markers onto map on page load.
  */
-updateRestaurants(false, true);
+ function loadRestaurants() {
+   const ul = document.querySelector('.restaurants-list');
+   ul.setAttribute('aria-busy', 'true');
+   updateRestaurants(false, true);
+   ul.setAttribute('aria-busy', 'false');
+ }
+
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -38,8 +49,11 @@ window.addEventListener('scroll', lazyLoads, {once: true});
  * Lazy loads restaurants and map.
  */
 function lazyLoads() {
- lazyLoadRestaurants();
- lazyLoadMap();
+  const ul = document.querySelector('.restaurants-list');
+  ul.setAttribute('aria-busy', 'true');
+  lazyLoadRestaurants();
+  lazyLoadMap();
+  ul.setAttribute('aria-busy', 'false');
 }
 
 /**

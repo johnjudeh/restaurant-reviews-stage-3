@@ -37,7 +37,6 @@
       <table class="restaurant__hours-table" id="restaurant-hours"></table>
     </section>
 
-
     <section id="map-container" class="map-container">
       <a href="#reviews-container" class="skip-link">Skip map to reviews</a>
       <div class="map-div map-reviews" id="map" tabindex="0" role="application"
@@ -45,10 +44,10 @@
     </section>
 
     <section class="reviews-container" id="reviews-container">
-      <ul role="presentation" id="reviews-list"></ul>
+      <ul role="presentation" aria-live="polite" aria-relevant="additions" id="reviews-list"></ul>
 
-      <form role="form" aria-label="review" id="reviews-form" class="reviews-form">
-        <h4>Leave a review:</h4>
+      <form role="form" aria-labelled-by="reviews-form__header" id="reviews-form" class="reviews-form">
+        <h4 id="reviews-form__header">Leave a review:</h4>
         <label class="reviews-form__label">
           Name:
           <input type="text" placeholder="John Smith" name="name" class="reviews-form__name" required>
