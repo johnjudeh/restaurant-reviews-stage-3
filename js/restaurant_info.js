@@ -5,10 +5,13 @@
 import DBHelper from './dbhelper';
 
 /**
- * Define variables used by the map
+ * Define variables used by the map.
  */
 let restaurant;
 
+/**
+ * Fetches restaurant at page load.
+ */
 fetchRestaurantFromURL((error, restaurant) => {
   if (error) { // Got an error!
     console.error(error);
@@ -20,7 +23,7 @@ fetchRestaurantFromURL((error, restaurant) => {
 /**
  * Scroll event that lazy loads Google maps.
  */
-window.addEventListener('scroll', lazyLoadMap, { once: true });
+window.addEventListener('scroll', lazyLoadMap, {once: true});
 
 /**
  * Lazy loads Google map from scroll event.
@@ -92,14 +95,13 @@ function fetchRestaurantReviewsFromURL(callback) {
 }
 
 /**
- * Ensures that only elements that should be focussable are
+ * Ensures that only elements that should be focussable are.
  */
 function removeIframeFocusability() {
   // Ensures that iframe is not focussable outside of javascript and has a title
   const iframe = document.querySelector('iframe');
   iframe.title = 'Restaurants map';
   iframe.setAttribute('tabindex', '-1');
-
 }
 
 /**
@@ -113,9 +115,11 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
   const favChecked = JSON.parse(restaurant.is_favorite);
   favouriteIcon.setAttribute('aria-pressed', favChecked);
   favouriteIcon.classList.toggle('starred', favChecked);
+  // Click event for favouriteIcon
   favouriteIcon.addEventListener('click', function() {
     toggleFavouriteRestaurant(this, restaurant);
   });
+  // Key event for favouriteIcon for a11y
   favouriteIcon.addEventListener('keydown', function(event) {
     // Define values for keycodes
     const VK_ENTER = 13;
@@ -126,7 +130,6 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
       toggleFavouriteRestaurant(this, restaurant);
     }
   });
-
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -144,6 +147,7 @@ function fillRestaurantHTML(restaurant = self.restaurant) {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+
   // fill reviews
   fetchRestaurantReviewsFromURL((error, reviews) => {
     if (!reviews) {
@@ -262,7 +266,6 @@ function sendNewReviewToDB(event) {
       ul.appendChild(createReviewHTML(review));
     }
   });
-
 }
 
 /**
