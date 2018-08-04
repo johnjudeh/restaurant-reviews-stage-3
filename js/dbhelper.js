@@ -91,11 +91,11 @@ export default class DBHelper {
      // Add prelimenary change of is_favorite property for user display
      restaurant.is_favorite = isFavourite;
 
-     offlineController.storeInOutboxDB('fav-rest-outbox', favRestaurantKey, restaurant)
+     offlineController.storeInDB('fav-rest-outbox', restaurant, favRestaurantKey)
       .then(() => {
 
         // Updates IDB database with updated restaurant (with new is_fav value)
-        return offlineController.storeInRestaurantDB(restaurant);
+        return offlineController.storeInDB('restaurants', restaurant);
       })
       .then(() => {
         // Adds background-sync event with servic worker
@@ -125,7 +125,7 @@ export default class DBHelper {
      })
      .then(restaurantResponse => {
        // Updates IDB database with updated restaurant (with new is_fav value)
-       offlineController.storeInRestaurantDB(restaurantResponse);
+       offlineController.storeInDB('restaurants', restaurantResponse);
        callback(null, restaurantResponse);
      })
      .catch(error => {
@@ -154,7 +154,7 @@ export default class DBHelper {
 
      const reviewKey = DBHelper.generateRandomKey('rev');
 
-     offlineController.storeInOutboxDB('reviews-outbox', reviewKey, requestBody)
+     offlineController.storeInDB('reviews-outbox', requestBody, reviewKey)
       .then(() => {
         // Add prelimenary creation time for display
         // and outbox key to retrieve it later and update with server response
@@ -253,7 +253,7 @@ export default class DBHelper {
         }
       })
       .then(restaurants => {
-        offlineController.storeInRestaurantDB(restaurants);
+        offlineController.storeInDB('restaurants', restaurants);
         callback(null, restaurants);
       })
       .catch(error => {
@@ -306,7 +306,7 @@ export default class DBHelper {
         }
       })
       .then(reviews => {
-        offlineController.storeInReviewsDB(reviews, id);
+        offlineController.storeInDB('reviews', reviews, Number(id));
         callback(null, reviews);
       })
       .catch(error => {

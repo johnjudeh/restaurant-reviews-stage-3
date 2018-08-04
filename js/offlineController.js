@@ -25,9 +25,9 @@ export default class OfflineController {
     return this._serviceWorker.createBackgroundSync(outboxKey);
   }
 
-  // =========== Database Functionality ===========
+  // =========== General Database Functionality ===========
 
-  // Opens the idb database and returns the promise
+  // Opens the idb database and returns a promise
   _openDatabase() {
     // If the browser does not support serviceWorker
     // we do not need a database
@@ -54,33 +54,38 @@ export default class OfflineController {
     });
   }
 
-  // =========== Restaurant Store Functionality ===========
-
-  // Pass restaurants to idb Store
-  storeInRestaurantDB(restaurants) {
+  // Stores the value (and key) in an IDB store
+  storeInDB(storeName, value, key = null) {
     return this._dbPromise.then(db => {
       // Leaves function if there is no database
       if (!db) return;
 
       // Creates a new transaction
-      const tx = db.transaction('restaurants', 'readwrite');
-      const store = tx.objectStore('restaurants');
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
 
-      // Checks if multiple results were returned
-      if (Array.isArray(restaurants)) {
-        // Loops through restaurants and stores each in database
-        restaurants.forEach(restaurant => {
-          store.put(restaurant);
-        });
+      if (storeName !== 'restaurants') {
+        key ? store.put(value, key) : store.put(value);
+
       } else {
-        // Places single result in idb
-        store.put(restaurants);
+        // Checks if multiple values are being stored
+        if (Array.isArray(value)) {
+          // Loops through restaurants and stores each in database
+          value.forEach(v => {
+            store.put(v);
+          });
+        } else {
+          // Places single value in idb
+          store.put(value);
+        }
       }
 
       // Returns promise of transaction
       return tx.complete;
     })
   }
+
+  // =========== Restaurant Store Functionality ===========
 
   // Pulls restaurants from database
   pullFromRestaurantDB(id) {
@@ -109,50 +114,7 @@ export default class OfflineController {
     });
   }
 
-  // Updates the database values
-  updateRestaurantDBRecord(id, propName, propValue) {
-    return this._dbPromise.then(db => {
-      // Leaves function if there is no database
-      if (!db) return;
-
-      // Converts id from number to string
-      id = Number(id);
-
-      // Creates a new transaction
-      const tx = db.transaction('restaurants', 'readwrite');
-      const store = tx.objectStore('restaurants');
-
-      // Get restaurant, update value and put back in database
-      store.get(id).then(restaurant => {
-        restaurant[propName] = propValue;
-        store.put(restaurant);
-      });
-
-      // Returns promise of transaction
-      return tx.complete;
-
-    })
-  }
-
   // =========== Reviews Database Functionality ===========
-
-  // Pass reviews to idb Store
-  storeInReviewsDB(reviews, restaurantId) {
-    return this._dbPromise.then(db => {
-      // Leaves function if there is no database
-      if (!db) return;
-
-      // Creates a new transaction
-      const tx = db.transaction('reviews', 'readwrite');
-      const store = tx.objectStore('reviews');
-
-      // Adds all reviews under restaurant id
-      store.put(reviews, Number(restaurantId));
-
-      // Returns promise of transaction
-      return tx.complete;
-    })
-  }
 
   // Pulls reviews from database
   pullFromReviewsDB(id) {
@@ -196,26 +158,6 @@ export default class OfflineController {
       // Returns promise of transaction
       return tx.complete;
 
-    })
-  }
-
-  // =========== Reviews-Outbox Store Functionality ===========
-
-  // Places review in reviews-outbox waiting for connectivity
-  storeInOutboxDB(storeName, key, value) {
-    return this._dbPromise.then(db => {
-      // Leaves function if there is no database
-      if (!db) return;
-
-      // Creates a new transaction
-      const tx = db.transaction(storeName, 'readwrite');
-      const store = tx.objectStore(storeName);
-
-      // Places review in review-outbox
-      store.put(value, key);
-
-      // Returns promise of transaction
-      return tx.complete;
     })
   }
 
