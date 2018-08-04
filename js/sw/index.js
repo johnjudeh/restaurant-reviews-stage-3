@@ -45,6 +45,7 @@ export default class ServiceWorker {
     });
   }
 
+  // Tracks the install progress of the sw
   _trackInstalling(worker) {
     worker.addEventListener('statechange', () => {
       if (worker.state === 'installed'){
@@ -54,6 +55,7 @@ export default class ServiceWorker {
     })
   }
 
+  // Notifies the user when an update is ready
   _updateReady(worker) {
     const toastDiv = document.getElementById('toastDiv');
     const swDismissBtn = document.getElementById('swDismiss');
@@ -78,6 +80,7 @@ export default class ServiceWorker {
     })
   }
 
+  // Registers a background sync with the sw
   createBackgroundSync(outboxKey) {
     // Exits if browser does not support service worker or background sync
     if (!navigator.serviceWorker || !window.SyncManager) return;
@@ -85,7 +88,6 @@ export default class ServiceWorker {
     return navigator.serviceWorker.ready.then(reg => {
       return reg.sync.register(outboxKey);
     });
-
   }
 
 }
