@@ -34,7 +34,7 @@ export default class DBHelper {
    * Server port.
    */
   static get SERVER_PORT() {
-    return 1337; // Change this to your server port
+    return 1337;
   }
 
   /**
@@ -51,7 +51,6 @@ export default class DBHelper {
   static get REVIEWS_URL() {
     const port = DBHelper.SERVER_PORT;
     return `http://localhost:${port}/reviews`;
-    // return 'http://localhost:9999';
   }
 
   /**
@@ -80,13 +79,13 @@ export default class DBHelper {
      } else {
        DBHelper.updateFavoriteRestWithoutBackgroundSync(restaurant, isFavourite, callback);
      }
-
    }
 
    /**
     * Update favorite restaurants using background sync.
     */
    static updateFavoriteRestWithBackgroundSync(restaurant, isFavourite, callback) {
+
      const favRestaurantKey = DBHelper.generateRandomKey('fav');
      // Add prelimenary change of is_favorite property for user display
      restaurant.is_favorite = isFavourite;
@@ -98,7 +97,7 @@ export default class DBHelper {
         return offlineController.storeInDB('restaurants', restaurant);
       })
       .then(() => {
-        // Adds background-sync event with servic worker
+        // Adds background-sync event with service worker
         callback(null, restaurant);
         return offlineController.createBackgroundSync(favRestaurantKey);
       })
@@ -113,9 +112,11 @@ export default class DBHelper {
    static updateFavoriteRestWithoutBackgroundSync(restaurant, isFavourite, callback) {
      // Updates server database with new is_favorite value
      const isFavUpdateURL = DBHelper.getSpecificRestaurantUrl(restaurant.id) + '?is_favorite=' + isFavourite;
+
      fetch(isFavUpdateURL, {
        method: 'PUT'
-     }).then(response => {
+     })
+     .then(response => {
        if (response.status === 200) { // Got a success response from the server!
          return response.json();
        } else { // Oops!. Got an error from server.
@@ -132,7 +133,6 @@ export default class DBHelper {
        console.log(error);
        callback(error, null);
      });
-
    }
 
    /**
@@ -165,14 +165,13 @@ export default class DBHelper {
         return offlineController.updateReviewsDBRecord(restaurant.id, requestBody);
       })
       .then(() => {
-        // Adds background-sync event with servic worker
+        // Adds background-sync event with service worker
         callback(null, requestBody);
         return offlineController.createBackgroundSync(reviewKey);
       })
       .catch(error => {
         callback(error, null);
       });
-
    }
 
    /**
@@ -199,7 +198,6 @@ export default class DBHelper {
      .catch(error => {
        callback(error, null);
      });
-
    }
 
   /**
@@ -259,7 +257,6 @@ export default class DBHelper {
       .catch(error => {
         callback(error, null);
       });
-
   }
 
   /**
@@ -312,7 +309,6 @@ export default class DBHelper {
       .catch(error => {
         callback(error, null);
       });
-
   }
 
   /**
