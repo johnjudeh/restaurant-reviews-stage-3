@@ -12,7 +12,6 @@ export default class OfflineController {
 
   constructor() {
     // Creates new ServiceWorker on instantiation
-    // TODO: turn me back on after development!
     this._serviceWorker = new ServiceWorker();
     // Creates / opens idb database
     this.IDB_DATABASE_NAME = 'restaurants-app';
@@ -80,7 +79,7 @@ export default class OfflineController {
         }
       }
 
-      // Returns promise of transaction
+      // Returns promise of complete transaction
       return tx.complete;
     })
   }
@@ -122,7 +121,7 @@ export default class OfflineController {
       // Leaves function if there is no database
       if (!db) return;
 
-      // Converts id from number to string
+      // Converts id from string to number
       id = Number(id);
 
       // Creates a new transaction
@@ -142,7 +141,7 @@ export default class OfflineController {
       // Leaves function if there is no database
       if (!db) return;
 
-      // Converts id from number to string
+      // Converts id from string to number
       id = Number(id);
 
       // Creates a new transaction
@@ -155,7 +154,7 @@ export default class OfflineController {
         store.put(reviews, id);
       });
 
-      // Returns promise of transaction
+      // Returns promise of complete transaction
       return tx.complete;
 
     })
