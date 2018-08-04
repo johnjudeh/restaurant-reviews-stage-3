@@ -4,7 +4,7 @@
 import idb from 'idb';
 
 const staticCacheName = 'mws-restaurant-v12';
-const cacheWhiteList = [ staticCacheName ];
+const cacheWhiteList = [staticCacheName];
 const IDB_DATABASE_NAME = 'restaurants-app';
 const PORT = 1337;
 const REVIEWS_URL = `http://localhost:${PORT}/reviews`;
