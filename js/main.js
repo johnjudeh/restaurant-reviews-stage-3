@@ -16,7 +16,7 @@ let restaurants,
     markers = [];
 
 /**
- * Fill page with restaurants without adding markers onto map.
+ * Fill page with restaurants without adding markers onto map on page load.
  */
 updateRestaurants(false, true);
 
@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 /**
- * Load all other restaurants when user scrolls.
+ * Load all other restaurants and Google map when user scrolls.
  */
-window.addEventListener('scroll', lazyLoads, { once: true });
+window.addEventListener('scroll', lazyLoads, {once: true});
 
 /**
  * Lazy loads restaurants and map.
@@ -52,7 +52,7 @@ function lazyLoadRestaurants() {
 }
 
 /**
- * Lazy loads google map and fills restaurant markers.
+ * Lazy loads google map and fills with restaurant markers.
  */
 function lazyLoadMap() {
   initMap();
@@ -147,6 +147,7 @@ function setEventsForFilters() {
  function lazyLoadMapAndUpdateRestaurants() {
    // Count the number of loaded restaurants
    const restaurantCount = document.querySelectorAll('.restaurants-list__card').length;
+   // Scroll event no longer needed as we are fully loading content here
    window.removeEventListener('scroll', lazyLoads);
    lazyLoadMap();
    updateRestaurants();
@@ -169,7 +170,7 @@ window.initMap = () => {
 };
 
 /**
- * Ensures that only elements that should be focussable are
+ * Ensures that only elements that should be focussable in Gmaps are.
  */
 function mapAssistiveStrategy() {
   const iframe = document.querySelector('iframe');
@@ -204,9 +205,8 @@ function updateRestaurants(addMarkers = true, lazy = false, startRest = 1) {
     } else {
       resetRestaurants(restaurants);
 
-      // Initially loads a number of restaurants based on viewport width
       if (lazy) {
-
+        // Initially loads a number of restaurants based on viewport width
         if (viewportWidth < TWO_RESTAURANT_VW) {
           fillRestaurantsHTML(addMarkers, startRest, 2);
         } else if (viewportWidth >= TWO_RESTAURANT_VW && viewportWidth < THREE_RESTAURANT_VW) {
@@ -244,7 +244,7 @@ function resetRestaurants(restaurants) {
  */
 function fillRestaurantsHTML(addMarkers = true, startRest = 1, endRest = 10, restaurants = self.restaurants) {
   const ul = document.getElementById('restaurants-list');
-  let i = 1;
+  let i = 1;  // restaurant count
 
   // Adds restaurants to page based on parameters passed
   restaurants.forEach(restaurant => {
